@@ -1,4 +1,5 @@
-﻿using aoc.ParseLib;
+﻿using System;
+using aoc.ParseLib;
 
 namespace aoc;
 
@@ -11,5 +12,6 @@ public static class Program
 
     private static void Solve_1(string[] input)
     {
+        Console.WriteLine("Part 1: " + input.Length);
     }
 }

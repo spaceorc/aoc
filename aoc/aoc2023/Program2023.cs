@@ -794,13 +794,13 @@ public static class Program2023
                     cur => ((map[cur.Pos], cur.Dir) switch
                         {
                             ('.', _) => new[] { cur },
-                            ('/', Dir.Right or Dir.Left) => new[] { cur.TurnCCW() },
-                            ('/', Dir.Up or Dir.Down) => new[] { cur.TurnCW() },
-                            ('\\', Dir.Right or Dir.Left) => new[] { cur.TurnCW() },
-                            ('\\', Dir.Up or Dir.Down) => new[] { cur.TurnCCW() },
-                            ('-', Dir.Left or Dir.Right) => new[] { cur },
-                            ('|', Dir.Up or Dir.Down) => new[] { cur },
-                            ('-' or '|', _) => new[] { cur.TurnCCW(), cur.TurnCW() },
+                            ('/', Dir.Right or Dir.Left) => [cur.TurnCCW()],
+                            ('/', Dir.Up or Dir.Down) => [cur.TurnCW()],
+                            ('\\', Dir.Right or Dir.Left) => [cur.TurnCW()],
+                            ('\\', Dir.Up or Dir.Down) => [cur.TurnCCW()],
+                            ('-', Dir.Left or Dir.Right) => [cur],
+                            ('|', Dir.Up or Dir.Down) => [cur],
+                            ('-' or '|', _) => [cur.TurnCCW(), cur.TurnCW()],
                             _ => throw new Exception($"Invalid state: {cur}")
                         })
                         .Select(next => next.Forward())
