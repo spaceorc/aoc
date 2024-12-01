@@ -87,6 +87,6 @@ public class TemplateAttribute(string template) : StructureAttribute
                type == typeof(int) ||
                type == typeof(string) ||
                type == typeof(char) ||
-               type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string) }) is not null;
+               type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, [typeof(string)]) is not null;
     }
 }

@@ -5,71 +5,80 @@ namespace aoc.Lib;
 
 public static class Rotations3
 {
-    private static readonly List<long[,]> A = new()
-    {
+    private static readonly List<long[,]> A =
+    [
         new long[,]
         {
             { 1, 0, 0 },
             { 0, 1, 0 },
             { 0, 0, 1 },
         },
-        new long[,]
-        {
-            { 0, 1, 0 },
-            { 0, 0, 1 },
-            { 1, 0, 0 },
-        },
-        new long[,]
-        {
-            { 0, 0, 1 },
-            { 1, 0, 0 },
-            { 0, 1, 0 },
-        },
-    };
 
-    private static readonly List<long[,]> B = new()
-    {
         new long[,]
         {
-            { 1, 0, 0 },
             { 0, 1, 0 },
             { 0, 0, 1 },
-        },
-        new long[,]
-        {
-            { -1, 0, 0 },
-            { 0, -1, 0 },
-            { 0, 0, 1 },
-        },
-        new long[,]
-        {
-            { -1, 0, 0 },
-            { 0, 1, 0 },
-            { 0, 0, -1 },
-        },
-        new long[,]
-        {
             { 1, 0, 0 },
-            { 0, -1, 0 },
-            { 0, 0, -1 },
         },
-    };
 
-    private static readonly List<long[,]> C = new()
-    {
+        new long[,]
+        {
+            { 0, 0, 1 },
+            { 1, 0, 0 },
+            { 0, 1, 0 },
+        },
+
+    ];
+
+    private static readonly List<long[,]> B =
+    [
         new long[,]
         {
             { 1, 0, 0 },
             { 0, 1, 0 },
             { 0, 0, 1 },
         },
+
+        new long[,]
+        {
+            { -1, 0, 0 },
+            { 0, -1, 0 },
+            { 0, 0, 1 },
+        },
+
+        new long[,]
+        {
+            { -1, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, -1 },
+        },
+
+        new long[,]
+        {
+            { 1, 0, 0 },
+            { 0, -1, 0 },
+            { 0, 0, -1 },
+        },
+
+    ];
+
+    private static readonly List<long[,]> C =
+    [
+        new long[,]
+        {
+            { 1, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 1 },
+        },
+
         new long[,]
         {
             { 0, 0, -1 },
             { 0, -1, 0 },
             { -1, 0, 0 },
         },
-    };
+
+    ];
 
     private static readonly List<long[,]> ROTATIONS = GenRotations();
     private static readonly List<long[,]> ROTATION_INVERSIONS = GenRotationInversions();

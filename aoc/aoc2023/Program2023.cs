@@ -59,7 +59,7 @@ public static class Program2023
             {
                 var n1 = nodes[Random.Shared.Next(nodes.Length)];
                 var n2 = nodes[Random.Shared.Next(nodes.Length)];
-                var first = Search.Bfs(new[] { n1 }, cur => edges[cur]).First(x => x.State == n2);
+                var first = Search.Bfs([n1], cur => edges[cur]).First(x => x.State == n2);
                 
                 foreach (var pair in first.PathBack().SlidingWindow(2))
                 {
@@ -80,8 +80,8 @@ public static class Program2023
                 edges[b] = edges[b].Without(a).ToArray();
             }
             
-            var c1 = Search.Bfs(new[]{cut[0].Item1}, cur => edges[cur]).LongCount();
-            var c2 = Search.Bfs(new[]{cut[0].Item2}, cur => edges[cur]).LongCount();
+            var c1 = Search.Bfs([cut[0].Item1], cur => edges[cur]).LongCount();
+            var c2 = Search.Bfs([cut[0].Item2], cur => edges[cur]).LongCount();
             return c1 * c2;
         }
     }
@@ -205,7 +205,7 @@ public static class Program2023
                 edges.Add(crossIndexes[cross], new Dictionary<int, long>());
                 foreach (var pathItem in Search
                              .Bfs(
-                                 new[] { cross },
+                                 [cross],
                                  v => v != cross && crosses.Contains(v)
                                      ? Array.Empty<V>()
                                      : v
@@ -352,47 +352,47 @@ public static class Program2023
             }
 
             var searchFromCenter = Search.Bfs(
-                    startFrom: new[] { start },
+                    startFrom: [start],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromTopLeft = Search.Bfs(
-                    startFrom: new[] { map.TopLeft },
+                    startFrom: [map.TopLeft],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromBottomLeft = Search.Bfs(
-                    startFrom: new[] { map.BottomLeft },
+                    startFrom: [map.BottomLeft],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromTopRight = Search.Bfs(
-                    startFrom: new[] { map.TopRight },
+                    startFrom: [map.TopRight],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromBottomRight = Search.Bfs(
-                    startFrom: new[] { map.BottomRight },
+                    startFrom: [map.BottomRight],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromTopCenter = Search.Bfs(
-                    startFrom: new[] { map.TopCenter },
+                    startFrom: [map.TopCenter],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromBottomCenter = Search.Bfs(
-                    startFrom: new[] { map.BottomCenter },
+                    startFrom: [map.BottomCenter],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromRightCenter = Search.Bfs(
-                    startFrom: new[] { map.RightCenter },
+                    startFrom: [map.RightCenter],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
             var searchFromLeftCenter = Search.Bfs(
-                    startFrom: new[] { map.LeftCenter },
+                    startFrom: [map.LeftCenter],
                     getNextStates: cur => cur.Area4().Where(v => map.Inside(v) && map[v] == '.')
                 )
                 .ToList();
@@ -439,16 +439,16 @@ public static class Program2023
     {
         var destinations = input
             .ToDictionary(x => x.name.Trim('%', '&'), x => x.dest)
-            .ToDefault(Array.Empty<string>());
+            .ToDefault([]);
 
         var sources = destinations
             .SelectMany(x => x.Value.Select(v => (k: x.Key, v)))
             .GroupBy(x => x.v, x => x.k)
             .ToDictionary(x => x.Key, x => x.ToArray())
-            .ToDefault(Array.Empty<string>());
+            .ToDefault([]);
 
-        destinations["button"] = new[] { "broadcast" };
-        sources["broadcast"] = new[] { "button" };
+        destinations["button"] = ["broadcast"];
+        sources["broadcast"] = ["button"];
 
         var conjunctions = input
             .Where(x => x.name.StartsWith('&'))
@@ -554,7 +554,7 @@ public static class Program2023
         long[][] parts
     )
     {
-        var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(bool), new[] { typeof(long[]) }, typeof(Program2023), true);
+        var method = new DynamicMethod(Guid.NewGuid().ToString(), typeof(bool), [typeof(long[])], typeof(Program2023), true);
         var il = method.GetILGenerator();
         var labels = rules.ToDictionary(r => r.name, _ => il.DefineLabel());
         labels.Add("A", il.DefineLabel());
@@ -635,7 +635,7 @@ public static class Program2023
 
         long SolvePart2()
         {
-            return Count(Enumerable.Repeat(new R(1, 4000), 4).ToImmutableArray(), "in");
+            return Count([..Enumerable.Repeat(new R(1, 4000), 4)], "in");
 
             long Count(ImmutableArray<R> part, string rule)
             {
@@ -739,11 +739,11 @@ public static class Program2023
         long Solve(long minLen, long maxLen)
         {
             return Search.Dijkstra(
-                    startFrom: new[]
-                    {
+                    startFrom:
+                    [
                         (walker: new Walker(V.Zero, Dir.Right), len: 0),
                         (walker: new Walker(V.Zero, Dir.Down), len: 0),
-                    },
+                    ],
                     getNextStates: cur => new[]
                         {
                             (walker: cur.walker.Forward(), len: cur.len + 1),
@@ -790,7 +790,7 @@ public static class Program2023
         long CountEnergized(Walker startFrom)
         {
             return Search.Bfs(
-                    startFrom: new[] { startFrom },
+                    startFrom: [startFrom],
                     cur => ((map[cur.Pos], cur.Dir) switch
                         {
                             ('.', _) => new[] { cur },
@@ -1141,12 +1141,12 @@ public static class Program2023
 
             var dirs = new Dictionary<char, int[]>
             {
-                { '-', new[] { RIGHT, LEFT } },
-                { '|', new[] { UP, DOWN } },
-                { 'L', new[] { UP, RIGHT } },
-                { 'J', new[] { UP, LEFT } },
-                { 'F', new[] { DOWN, RIGHT } },
-                { '7', new[] { DOWN, LEFT } },
+                { '-', [RIGHT, LEFT] },
+                { '|', [UP, DOWN] },
+                { 'L', [UP, RIGHT] },
+                { 'J', [UP, LEFT] },
+                { 'F', [DOWN, RIGHT] },
+                { '7', [DOWN, LEFT] },
             };
 
             var moves = dirs

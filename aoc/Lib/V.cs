@@ -9,26 +9,26 @@ public record V(long X, long Y)
     public static readonly V Zero = new(0, 0);
     public static readonly V One = new(1, 1);
 
-    public static readonly V[] up3 = { new(-1, -1), new(0, -1), new(1, -1) };
-    public static readonly V[] down3 = { new(-1, 1), new(0, 1), new(1, 1) };
-    public static readonly V[] left3 = { new(-1, -1), new(-1, 0), new(-1, 1) };
-    public static readonly V[] right3 = { new(1, -1), new(1, 0), new(1, 1) };
+    public static readonly V[] up3 = [new(-1, -1), new(0, -1), new(1, -1)];
+    public static readonly V[] down3 = [new(-1, 1), new(0, 1), new(1, 1)];
+    public static readonly V[] left3 = [new(-1, -1), new(-1, 0), new(-1, 1)];
+    public static readonly V[] right3 = [new(1, -1), new(1, 0), new(1, 1)];
     public static readonly V up = new(0, -1);
     public static readonly V down = new(0, 1);
     public static readonly V left = new(-1, 0);
     public static readonly V right = new(1, 0);
-    public static readonly V[] dirs = { up, right, down, left };
+    public static readonly V[] dirs = [up, right, down, left];
 
     public static V Dir(Dir dir) => dirs[(int)dir];
 
-    public static readonly V[] area4 = { new(1, 0), new(-1, 0), new(0, 1), new(0, -1) };
-    public static readonly V[] area5 = { new(0, 0), new(1, 0), new(-1, 0), new(0, 1), new(0, -1) };
+    public static readonly V[] area4 = [new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
+    public static readonly V[] area5 = [new(0, 0), new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
 
     public static readonly V[] area8 =
-    {
+    [
         new(1, 0), new(-1, 0), new(0, 1), new(0, -1),
         new(1, 1), new(-1, -1), new(-1, 1), new(1, -1),
-    };
+    ];
 
     public V Norm => new(Math.Sign(X), Math.Sign(Y));
 

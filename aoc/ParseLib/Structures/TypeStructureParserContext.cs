@@ -30,8 +30,8 @@ public record TypeStructureParserContext(
 
     public static TypeStructureParserContext CreateRoot() => new(
         Target: "",
-        Attributes: new List<StructureAttribute>(),
-        ParentAttributes: new List<(string Target, StructureAttribute Attribute)>(), 
+        Attributes: [],
+        ParentAttributes: [], 
         AllAttributes: new Dictionary<StructureAttribute, string>(),
         UsedAttributes: new Dictionary<StructureAttribute, string>()
     );
@@ -49,7 +49,7 @@ public record TypeStructureParserContext(
         return this with
         {
             Target = CombineTarget(Target, name),
-            Attributes = new List<StructureAttribute>(),
+            Attributes = [],
             ParentAttributes = ParentAttributes.Concat(Attributes.Select(a => (Target, a))).ToList(),
         };
     }

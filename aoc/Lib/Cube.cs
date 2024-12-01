@@ -77,10 +77,10 @@ public class Cube(V3 min, V3 max) : IEquatable<Cube>
         var (intersection, inA, _) = Intersect(this, b);
 
         if (intersection == this)
-            return Array.Empty<Cube>();
+            return [];
 
         if (intersection == null)
-            return new[] { this };
+            return [this];
 
         return inA;
     }
@@ -110,7 +110,7 @@ public class Cube(V3 min, V3 max) : IEquatable<Cube>
     public static (Cube? intersection, Cube[] inA, Cube[] inB) Intersect(Cube a, Cube b)
     {
         if (!a.IntersectsWith(b))
-            return (null, new[] { a }, new[] { b });
+            return (null, [a], [b]);
 
         var intersection = new List<Cube>();
         var inA = new List<Cube>();

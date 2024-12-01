@@ -17,7 +17,7 @@ public static class Parser
             && parameters[0].ParameterType == typeof(string[]) 
             && !parameters[0].GetCustomAttributes().OfType<StructureAttribute>().Any()
             && !method.GetCustomAttributes().OfType<StructureAttribute>().Any())
-            return new object?[] { lines };
+            return [lines];
 
         if (method.GetCustomAttributes().OfType<StructureAttribute>().Any())
         {
@@ -72,13 +72,13 @@ public static class Parser
             var itemStructure = TypeStructureParser.Parse(parameterType.GetElementType()!, customAttributeProvider);
             var parseAllGeneric = typeof(Parser).GetMethod(nameof(ParseAll), BindingFlags.NonPublic | BindingFlags.Static);
             var parseAll = parseAllGeneric!.MakeGenericMethod(parameterType.GetElementType()!);
-            return parseAll.Invoke(null, new object?[] { itemStructure, lines })!;
+            return parseAll.Invoke(null, [itemStructure, lines])!;
         }
 
         var structure = TypeStructureParser.Parse(parameterType, customAttributeProvider);
         var parseGeneric = typeof(Parser).GetMethod(nameof(Parse), BindingFlags.NonPublic | BindingFlags.Static);
         var parse = parseGeneric!.MakeGenericMethod(parameterType);
-        return parse.Invoke(null, new object?[] { structure, string.Join('\n', lines) })!;
+        return parse.Invoke(null, [structure, string.Join('\n', lines)])!;
     }
 
     private static T[] ParseAll<T>(TypeStructure structure, IEnumerable<string> lines) => lines.Select(x => Parse<T>(structure, x)).ToArray();

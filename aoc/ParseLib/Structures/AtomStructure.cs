@@ -23,9 +23,9 @@ public record AtomStructure(Type Type, string Separators = TypeStructureParser.D
             return source[0];
         }
 
-        var typeParseMethod = Type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string) });
+        var typeParseMethod = Type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, [typeof(string)]);
         if (typeParseMethod != null)
-            return typeParseMethod.Invoke(null, new object?[] { source })!;
+            return typeParseMethod.Invoke(null, [source])!;
 
         var queue = new Queue<string>(
             source
@@ -56,9 +56,9 @@ public record AtomStructure(Type Type, string Separators = TypeStructureParser.D
             return value[0];
         }
 
-        var typeParseMethod = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, new[] { typeof(string) });
+        var typeParseMethod = type.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, [typeof(string)]);
         if (typeParseMethod != null)
-            return typeParseMethod.Invoke(null, new object?[] { source.Dequeue() })!;
+            return typeParseMethod.Invoke(null, [source.Dequeue()])!;
 
         if (type.IsArray)
         {

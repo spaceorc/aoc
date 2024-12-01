@@ -27,7 +27,7 @@ public static class Runner
         var dynamicMethod = new DynamicMethod(
             Guid.NewGuid().ToString(),
             typeof(void),
-            new[] { typeof(object?[]) },
+            [typeof(object?[])],
             typeof(Runner),
             skipVisibility: true
         );

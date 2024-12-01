@@ -6,7 +6,7 @@ namespace aoc.Lib;
 public class Heap<T>(IComparer<T>? comparer = null)
 {
     private readonly IComparer<T> comparer = comparer ?? Comparer<T>.Default;
-    private readonly List<T> values = new();
+    private readonly List<T> values = [];
 
     public bool IsEmpty => Count == 0;
 

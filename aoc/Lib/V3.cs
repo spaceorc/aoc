@@ -10,14 +10,14 @@ public class V3(long x, long y, long z) : IEquatable<V3>
     public static readonly V3 One = new(1, 1, 1);
 
     public static readonly V3[] neighbors =
-    {
+    [
         new(1, 0, 0),
         new(0, 1, 0),
         new(0, 0, 1),
         new(-1, 0, 0),
         new(0, -1, 0),
         new(0, 0, -1),
-    };
+    ];
 
     public readonly long X = x;
     public readonly long Y = y;
