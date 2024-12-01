@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace aoc.Lib;
 
-public class V3 : IEquatable<V3>
+public class V3(long x, long y, long z) : IEquatable<V3>
 {
     public static readonly V3 Zero = new(0, 0, 0);
     public static readonly V3 One = new(1, 1, 1);
@@ -19,16 +19,9 @@ public class V3 : IEquatable<V3>
         new(0, 0, -1),
     };
 
-    public readonly long X;
-    public readonly long Y;
-    public readonly long Z;
-
-    public V3(long x, long y, long z)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
+    public readonly long X = x;
+    public readonly long Y = y;
+    public readonly long Z = z;
 
     public bool Equals(V3? other) => !ReferenceEquals(other, null) && X == other.X && Y == other.Y && Z == other.Z;
     public override bool Equals(object? obj) => obj is V3 other && Equals(other);

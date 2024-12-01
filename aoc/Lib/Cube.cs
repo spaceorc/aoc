@@ -4,21 +4,15 @@ using System.Linq;
 
 namespace aoc.Lib;
 
-public class Cube : IEquatable<Cube>
+public class Cube(V3 min, V3 max) : IEquatable<Cube>
 {
     public Cube(long minX, long maxX, long minY, long maxY, long minZ, long maxZ)
         : this(new V3(minX, minY, minZ), new V3(maxX, maxY, maxZ))
     {
     }
 
-    public Cube(V3 min, V3 max)
-    {
-        Min = min;
-        Max = max;
-    }
-
-    public V3 Min { get; }
-    public V3 Max { get; }
+    public V3 Min { get; } = min;
+    public V3 Max { get; } = max;
 
     public long MinX => Min.X;
     public long MaxX => Max.X;

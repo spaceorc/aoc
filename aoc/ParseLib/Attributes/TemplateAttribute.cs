@@ -8,14 +8,9 @@ using aoc.ParseLib.Structures;
 namespace aoc.ParseLib.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Parameter | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-public class TemplateAttribute : StructureAttribute
+public class TemplateAttribute(string template) : StructureAttribute
 {
-    public TemplateAttribute(string template)
-    {
-        Template = template;
-    }
-
-    public string Template { get; }
+    public string Template { get; } = template;
     public bool IsRegex { get; set; }
 
     public override string ToString() => $"Template[{Template}], IsRegex={IsRegex}, {base.ToString()}";

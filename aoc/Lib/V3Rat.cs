@@ -2,21 +2,14 @@ using System;
 
 namespace aoc.Lib;
 
-public class V3Rat : IEquatable<V3Rat>
+public class V3Rat(Rational x, Rational y, Rational z) : IEquatable<V3Rat>
 {
     public static readonly V3Rat Zero = new(0, 0, 0);
     public static readonly V3Rat One = new(1, 1, 1);
 
-    public readonly Rational X;
-    public readonly Rational Y;
-    public readonly Rational Z;
-
-    public V3Rat(Rational x, Rational y, Rational z)
-    {
-        X = x;
-        Y = y;
-        Z = z;
-    }
+    public readonly Rational X = x;
+    public readonly Rational Y = y;
+    public readonly Rational Z = z;
 
     public bool Equals(V3Rat? other) => !ReferenceEquals(other, null) && X == other.X && Y == other.Y && Z == other.Z;
     public override bool Equals(object? obj) => obj is V3Rat other && Equals(other);

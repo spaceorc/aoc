@@ -6,14 +6,9 @@ using aoc.ParseLib.Structures;
 namespace aoc.ParseLib.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Parameter | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-public class SplitAttribute : StructureAttribute
+public class SplitAttribute(string separators = TypeStructureParser.DefaultSeparators) : StructureAttribute
 {
-    public SplitAttribute(string separators = TypeStructureParser.DefaultSeparators)
-    {
-        Separators = separators;
-    }
-
-    public string Separators { get; }
+    public string Separators { get; } = separators;
 
     public override string ToString() => $"Split[{Separators}], {base.ToString()}";
 

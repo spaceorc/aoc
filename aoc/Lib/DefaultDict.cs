@@ -12,20 +12,11 @@ public static class DefaultDict
     }
 }
 
-public class DefaultDict<TKey, TValue> :
+public class DefaultDict<TKey, TValue>(Dictionary<TKey, TValue> impl, TValue defaultValue = default!) :
     IDictionary<TKey, TValue>,
     IReadOnlyDictionary<TKey, TValue>
     where TKey : notnull
 {
-    private readonly Dictionary<TKey, TValue> impl;
-    private readonly TValue defaultValue;
-
-    public DefaultDict(Dictionary<TKey, TValue> impl, TValue defaultValue = default!)
-    {
-        this.impl = impl;
-        this.defaultValue = defaultValue;
-    }
-
     public DefaultDict() : this(new Dictionary<TKey, TValue>())
     {
     }

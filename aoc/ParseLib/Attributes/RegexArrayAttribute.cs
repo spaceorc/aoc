@@ -6,14 +6,9 @@ using aoc.ParseLib.Structures;
 namespace aoc.ParseLib.Attributes;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Parameter | AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-public class RegexArrayAttribute : StructureAttribute
+public class RegexArrayAttribute(string regex) : StructureAttribute
 {
-    public RegexArrayAttribute(string regex)
-    {
-        Regex = regex;
-    }
-
-    public string Regex { get; }
+    public string Regex { get; } = regex;
 
     public override string ToString() => $"RegexArray[{Regex}], {base.ToString()}";
 

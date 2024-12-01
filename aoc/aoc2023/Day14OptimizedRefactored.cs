@@ -5,21 +5,9 @@ namespace aoc;
 
 public static unsafe class Day14OptimizedRefactored
 {
-    public struct LinesIterator
+    public struct LinesIterator(int sizeX, int sizeY, int x, int y, int posDx, int posDy, int lineDx, int lineDy)
     {
-        public int sizeX, sizeY, x, y, posDx, posDy, lineDx, lineDy;
-
-        public LinesIterator(int sizeX, int sizeY, int x, int y, int posDx, int posDy, int lineDx, int lineDy)
-        {
-            this.sizeX = sizeX;
-            this.sizeY = sizeY;
-            this.x = x;
-            this.y = y;
-            this.posDx = posDx;
-            this.posDy = posDy;
-            this.lineDx = lineDx;
-            this.lineDy = lineDy;
-        }
+        public int sizeX = sizeX, sizeY = sizeY, x = x, y = y, posDx = posDx, posDy = posDy, lineDx = lineDx, lineDy = lineDy;
 
         public bool MoveNextPos()
         {

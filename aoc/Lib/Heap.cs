@@ -3,15 +3,10 @@ using System.Collections.Generic;
 
 namespace aoc.Lib;
 
-public class Heap<T>
+public class Heap<T>(IComparer<T>? comparer = null)
 {
-    private readonly IComparer<T> comparer;
+    private readonly IComparer<T> comparer = comparer ?? Comparer<T>.Default;
     private readonly List<T> values = new();
-
-    public Heap(IComparer<T>? comparer = null)
-    {
-        this.comparer = comparer ?? Comparer<T>.Default;
-    }
 
     public bool IsEmpty => Count == 0;
 

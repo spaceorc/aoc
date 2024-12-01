@@ -3,21 +3,15 @@ using System.Collections.Generic;
 
 namespace aoc.Lib;
 
-public class Square : IEquatable<Square>
+public class Square(V topLeft, V bottomRight) : IEquatable<Square>
 {
     public Square(long minX, long minY, long maxX, long maxY)
         : this(new V(minX, minY), new V(maxX, maxY))
     {
     }
 
-    public Square(V topLeft, V bottomRight)
-    {
-        TopLeft = topLeft;
-        BottomRight = bottomRight;
-    }
-
-    public V TopLeft { get; }
-    public V BottomRight { get; }
+    public V TopLeft { get; } = topLeft;
+    public V BottomRight { get; } = bottomRight;
     public long MinX => TopLeft.X;
     public long MinY => TopLeft.Y;
     public long MaxX => BottomRight.X;

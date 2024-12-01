@@ -8,14 +8,9 @@ public static class ArrayComparer
     public static ArrayComparer<T> Create<T>() => new();
 }
 
-public class ArrayComparer<T> : IComparer<T[]>
+public class ArrayComparer<T>(IComparer<T>? elementComparer = null) : IComparer<T[]>
 {
-    private readonly IComparer<T> elementComparer;
-
-    public ArrayComparer(IComparer<T>? elementComparer = null)
-    {
-        this.elementComparer = elementComparer ?? Comparer<T>.Default;
-    }
+    private readonly IComparer<T> elementComparer = elementComparer ?? Comparer<T>.Default;
 
     public int Compare(T[]? x, T[]? y)
     {

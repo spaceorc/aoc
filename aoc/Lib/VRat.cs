@@ -2,19 +2,13 @@ using System;
 
 namespace aoc.Lib;
 
-public class VRat : IEquatable<VRat>
+public class VRat(Rational x, Rational y) : IEquatable<VRat>
 {
     public static readonly VRat Zero = new(0, 0);
     public static readonly VRat One = new(1, 1);
 
-    public readonly Rational X;
-    public readonly Rational Y;
-
-    public VRat(Rational x, Rational y)
-    {
-        X = x;
-        Y = y;
-    }
+    public readonly Rational X = x;
+    public readonly Rational Y = y;
 
     public bool Equals(VRat? other) => !ReferenceEquals(other, null) && X == other.X && Y == other.Y;
     public override bool Equals(object? obj) => obj is VRat other && Equals(other);
