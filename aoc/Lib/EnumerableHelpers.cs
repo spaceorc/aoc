@@ -118,6 +118,11 @@ public static class EnumerableHelpers
         return items.Where(x => !values.Contains(x));
     }
 
+    public static IEnumerable<T> ExceptIndex<T>(this IEnumerable<T> items, int index)
+    {
+        return items.Where((_, i) => i != index);
+    }
+
     public static long Product<T>(this IEnumerable<T> items, Func<T, long> selector)
     {
         return items.Select(selector).Product();
