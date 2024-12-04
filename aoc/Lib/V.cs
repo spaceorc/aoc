@@ -19,10 +19,8 @@ public record V(long X, long Y)
     public static readonly V right = new(1, 0);
     public static readonly V[] dirs = [up, right, down, left];
 
-    public static V Dir(Dir dir) => dirs[(int)dir];
-
     public static readonly V[] area4 = [new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
-    public static readonly V[] area5 = [new(0, 0), new(1, 0), new(-1, 0), new(0, 1), new(0, -1)];
+    public static readonly V[] area5 = [new(0, 0), ..area4];
 
     public static readonly V[] area8 =
     [
@@ -30,7 +28,14 @@ public record V(long X, long Y)
         new(1, 1), new(-1, -1), new(-1, 1), new(1, -1),
     ];
 
+    public static readonly V[] area9 =
+    [
+        new(0, 0), ..area8,
+    ];
+
     public V Norm => new(Math.Sign(X), Math.Sign(Y));
+
+    public static V Dir(Dir dir) => dirs[(int)dir];
 
     public static V operator +(V a, V b) => new(a.X + b.X, a.Y + b.Y);
     public static V operator *(V a, long k) => new(a.X * k, a.Y * k);
