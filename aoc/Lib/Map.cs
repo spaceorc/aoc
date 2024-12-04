@@ -35,6 +35,11 @@ public class Map<T>
         get => data[index];
         set => data[index] = value;
     }
+    
+    public T At(V v, T defaultValue = default!)
+    {
+        return Inside(v) ? this[v] : defaultValue;
+    }
 
     public V TopCenter => (TopLeft + TopRight) / 2;
     public V BottomCenter => (BottomLeft + BottomRight) / 2;

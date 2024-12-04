@@ -108,6 +108,11 @@ public static class EnumerableHelpers
         return items.Skip(startFrom).Chunk(n).Select(x => x.First());
     }
 
+    public static bool All<T>(this IEnumerable<T> items, Func<T, int, bool> predicate)
+    {
+        return items.Select(predicate).All(x => x);
+    }
+
     public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> items)
     {
         return items.Select((v, i) => (v, i));
