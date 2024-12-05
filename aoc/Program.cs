@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using aoc.Lib;
@@ -11,25 +12,66 @@ public static class Program
     private static void Main()
     {
         Runner.RunFile("input.txt", Solve_5);
+        // Runner.RunFile("day5.txt", Solve_5);
         // Runner.RunFile("day4.txt", Solve_4);
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
     }
 
-    private static void Solve_5(string[] input)
+    private static void Solve_6(string[] input)
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
+        return;
 
         long Part1()
         {
             return 0L;
         }
-
+        
         long Part2()
         {
             return 0L;
+        }
+    }
+
+    private static void Solve_5((long before, long after)[] rules, long[][] updates)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1()
+        {
+            return updates
+                .Where(Check)
+                .Sum(u => u[u.Length / 2]);
+        }
+
+        long Part2()
+        {
+            return updates
+                .Where(u => !Check(u))
+                .Select(Correct)
+                .Sum(u => u[u.Length / 2]);
+        }
+
+        bool Check(long[] update)
+        {
+            var posByPage = update.WithIndex().ToDictionary(e => e.item, e => e.index);
+            return rules
+                .Where(r => posByPage.ContainsKey(r.before) && posByPage.ContainsKey(r.after))
+                .All(r => posByPage[r.before] < posByPage[r.after]);
+        }
+
+        long[] Correct(long[] update)
+        {
+            var deps = rules
+                .Where(r => update.Contains(r.before) && update.Contains(r.after))
+                .ToLookup(r => r.after, r => r.before);
+
+            return update.TopSort(e => deps[e]).ToArray();
         }
     }
 
@@ -37,6 +79,7 @@ public static class Program
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
+        return;
 
         long Part1()
         {
@@ -66,6 +109,7 @@ public static class Program
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
+        return;
 
         long Part1() =>
             new Regex(@"mul\((\d{1,3}),(\d{1,3})\)")
@@ -91,6 +135,7 @@ public static class Program
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
+        return;
 
         bool IsSafe(long[] levels) =>
             levels.SlidingWindow(2).All(w => w[1] - w[0] is >= 1 and <= 3) ||
@@ -107,6 +152,7 @@ public static class Program
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
+        return;
 
         long Part1()
         {

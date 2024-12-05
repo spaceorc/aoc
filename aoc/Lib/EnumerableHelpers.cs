@@ -6,17 +6,22 @@ namespace aoc.Lib;
 
 public static class EnumerableHelpers
 {
-    public static IEnumerable<TSource> Scan<TSource>(this IEnumerable<TSource> source,
-        Func<TSource, TSource, TSource> transformation)
+    public static IEnumerable<TSource> Scan<TSource>(
+        this IEnumerable<TSource> source,
+        Func<TSource, TSource, TSource> transformation
+    )
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
         if (transformation == null) throw new ArgumentNullException(nameof(transformation));
 
         return ScanImpl(source, transformation, e => e.MoveNext() ? (true, e.Current) : default);
     }
-    
-    public static IEnumerable<TState> Scan<TSource, TState>(this IEnumerable<TSource> source,
-        TState seed, Func<TState, TSource, TState> transformation)
+
+    public static IEnumerable<TState> Scan<TSource, TState>(
+        this IEnumerable<TSource> source,
+        TState seed,
+        Func<TState, TSource, TState> transformation
+    )
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
         if (transformation == null) throw new ArgumentNullException(nameof(transformation));
@@ -24,9 +29,11 @@ public static class EnumerableHelpers
         return ScanImpl(source, transformation, _ => (true, seed));
     }
 
-    private static IEnumerable<TState> ScanImpl<TSource, TState>(IEnumerable<TSource> source,
+    private static IEnumerable<TState> ScanImpl<TSource, TState>(
+        IEnumerable<TSource> source,
         Func<TState, TSource, TState> transformation,
-        Func<IEnumerator<TSource>, (bool, TState)> seeder)
+        Func<IEnumerator<TSource>, (bool, TState)> seeder
+    )
     {
         using var e = source.GetEnumerator();
 
@@ -60,7 +67,7 @@ public static class EnumerableHelpers
     }
 
     /// <summary>
-    /// Works only if next item is strictly determined by previous item - so, it we meet the same item again - it's a cycle
+    ///     Works only if next item is strictly determined by previous item - so, it we meet the same item again - it's a cycle
     /// </summary>
     public static T ElementAtWithCycleTrack<T>(this IEnumerable<T> items, long index, IEqualityComparer<T>? comparer = null) where T : notnull
     {
@@ -150,6 +157,31 @@ public static class EnumerableHelpers
             yield return item;
             if (predicate(item))
                 break;
+        }
+    }
+
+    public static IEnumerable<T> TopSort<T>(this IEnumerable<T> items, Func<T, IEnumerable<T>> getDependencies) where T : notnull
+    {
+        var result = new List<T>();
+        var used = new Dictionary<T, bool>();
+        foreach (var item in items)
+            Add(item);
+        return result;
+
+        void Add(T item)
+        {
+            if (used.TryGetValue(item, out var done))
+            {
+                if (!done)
+                    throw new InvalidOperationException("Cycle detected");
+                return;
+            }
+
+            used[item] = false;
+            foreach (var dep in getDependencies(item))
+                Add(dep);
+            result.Add(item);
+            used[item] = true;
         }
     }
 }
