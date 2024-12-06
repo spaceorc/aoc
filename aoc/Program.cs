@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using aoc.Lib;
@@ -11,7 +10,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("input.txt", Solve_5);
+        Runner.RunFile("input.txt", Solve_7);
+        // Runner.RunFile("day6.txt", Solve_6);
         // Runner.RunFile("day5.txt", Solve_5);
         // Runner.RunFile("day4.txt", Solve_4);
         // Runner.RunFile("day3.txt", Solve_3);
@@ -19,7 +19,7 @@ public static class Program
         // Runner.RunFile("day1.txt", Solve_1);
     }
 
-    private static void Solve_6(string[] input)
+    private static void Solve_7(string[] input)
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
@@ -29,11 +29,44 @@ public static class Program
         {
             return 0L;
         }
-        
+
         long Part2()
         {
             return 0L;
         }
+    }
+
+    private static void Solve_6(Map<char> map)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1() =>
+            Start()
+                .Walk(map, w => Next(w))
+                .Select(x => x.Pos)
+                .Distinct()
+                .Count();
+
+        long Part2() =>
+            Start()
+                .Walk(map, w => Next(w))
+                .Select(x => x.Pos)
+                .Distinct()
+                .Count(
+                    obstacle => Start()
+                        .WalkWithCycleCheck(map, w => Next(w, obstacle))
+                        .Last() is null
+                );
+
+
+        Walker Start() => new(map.All().Single(v => map[v] == '^'), Dir.Up);
+
+        Walker? Next(Walker w, V? obstacle = null) =>
+            !w.Forward().Inside(map) ? null
+            : w.Forward().Pos == obstacle || map[w.Forward().Pos] == '#' ? w.TurnCW()
+            : w.Forward();
     }
 
     private static void Solve_5((long before, long after)[] rules, long[][] updates)
