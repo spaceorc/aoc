@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using aoc.Lib;
@@ -26,24 +27,15 @@ public static class Program
         Part2().Out("Part 2: ");
         return;
 
-        long Part1()
-        {
-            return map.All()
-                .Where(v => map[v] is not '.')
-                .ToLookup(v => map[v])
-                .SelectMany(g => g.ToArray().Combinations(2))
+        long Part1() =>
+            AntennaPairs()
                 .SelectMany(vs => new[] { vs[0] * 2 - vs[1], vs[1] * 2 - vs[0] })
                 .Where(map.Inside)
                 .Distinct()
                 .Count();
-        }
 
-        long Part2()
-        {
-            return map.All()
-                .Where(v => map[v] is not '.')
-                .ToLookup(v => map[v])
-                .SelectMany(g => g.ToArray().Combinations(2))
+        long Part2() =>
+            AntennaPairs()
                 .SelectMany(
                     vs => Enumerable
                         .Range(0, int.MaxValue)
@@ -58,7 +50,9 @@ public static class Program
                 )
                 .Distinct()
                 .Count();
-        }
+
+        IEnumerable<V> Antennas() => map.All().Where(v => map[v] is not '.');
+        IEnumerable<List<V>> AntennaPairs() => Antennas().ToLookup(v => map[v]).SelectMany(g => g.ToArray().Combinations(2));
     }
 
     private static void Solve_7((long res, long[] args)[] input)
