@@ -10,7 +10,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("input.txt", Solve_7);
+        Runner.RunFile("day7.txt", Solve_7);
         // Runner.RunFile("day6.txt", Solve_6);
         // Runner.RunFile("day5.txt", Solve_5);
         // Runner.RunFile("day4.txt", Solve_4);
@@ -19,21 +19,33 @@ public static class Program
         // Runner.RunFile("day1.txt", Solve_1);
     }
 
-    private static void Solve_7(string[] input)
+    private static void Solve_7((long res, long[] args)[] input)
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
         return;
 
-        long Part1()
-        {
-            return 0L;
-        }
+        long Part1() => input.Where(x => Check(x.res, x.args, 2)).Sum(x => x.res);
+        long Part2() => input.Where(x => Check(x.res, x.args, 3)).Sum(x => x.res);
 
-        long Part2()
+        bool Check(long res, long[] args, int opsCount) =>
+            Combinatorics
+                .Variants(args.Length - 1, opsCount)
+                .Select(ops => Calc(args, ops))
+                .Any(calculated => calculated == res);
+
+        long Calc(long[] args, int[] ops) =>
+            args[1..]
+                .Zip(ops, (arg, op) => (arg, op))
+                .Aggregate(args[0], (acc, x) => Op(acc, x.arg, x.op));
+
+        long Op(long a, long b, int op) => op switch
         {
-            return 0L;
-        }
+            0 => a + b,
+            1 => a * b,
+            2 => long.Parse(a.ToString() + b),
+            _ => throw new InvalidOperationException(),
+        };
     }
 
     private static void Solve_6(Map<char> map)
