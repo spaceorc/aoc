@@ -34,8 +34,8 @@ public static class Program
                 .SelectMany(g => g.ToArray().Combinations(2))
                 .SelectMany(vs => new[] { vs[0] * 2 - vs[1], vs[1] * 2 - vs[0] })
                 .Where(map.Inside)
-                .ToHashSet()
-                .Count;
+                .Distinct()
+                .Count();
         }
 
         long Part2()
@@ -56,8 +56,8 @@ public static class Program
                                 .TakeWhile(map.Inside)
                         )
                 )
-                .ToHashSet()
-                .Count;
+                .Distinct()
+                .Count();
         }
     }
 
