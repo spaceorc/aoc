@@ -10,13 +10,55 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day7.txt", Solve_7);
+        Runner.RunFile("day8.txt", Solve_8);
+        // Runner.RunFile("day7.txt", Solve_7);
         // Runner.RunFile("day6.txt", Solve_6);
         // Runner.RunFile("day5.txt", Solve_5);
         // Runner.RunFile("day4.txt", Solve_4);
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_8(Map<char> map)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1()
+        {
+            return map.All()
+                .Where(v => map[v] is not '.')
+                .ToLookup(v => map[v])
+                .SelectMany(g => g.ToArray().Combinations(2))
+                .SelectMany(vs => new[] { vs[0] * 2 - vs[1], vs[1] * 2 - vs[0] })
+                .Where(map.Inside)
+                .ToHashSet()
+                .Count;
+        }
+
+        long Part2()
+        {
+            return map.All()
+                .Where(v => map[v] is not '.')
+                .ToLookup(v => map[v])
+                .SelectMany(g => g.ToArray().Combinations(2))
+                .SelectMany(
+                    vs => Enumerable
+                        .Range(0, int.MaxValue)
+                        .Select(n => vs[1] + (vs[1] - vs[0]) * n)
+                        .TakeWhile(map.Inside)
+                        .Concat(
+                            Enumerable
+                                .Range(0, int.MaxValue)
+                                .Select(n => vs[0] - (vs[1] - vs[0]) * n)
+                                .TakeWhile(map.Inside)
+                        )
+                )
+                .ToHashSet()
+                .Count;
+        }
     }
 
     private static void Solve_7((long res, long[] args)[] input)
