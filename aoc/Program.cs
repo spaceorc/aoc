@@ -56,27 +56,20 @@ public static class Program
 
         long Part2()
         {
-            var freeBlocks = Enumerable.Range(0, 10).Select(_ => new Heap<int>()).ToArray();
+            var freeBlocksBySize = Enumerable.Range(0, 10).Select(_ => new Heap<int>()).ToArray();
+            
             var files = new List<(int id, int size, int pos)>();
             var id = 0;
             var isFree = false;
             var pos = 0;
             foreach (var c in input)
             {
-                if (isFree)
-                {
-                    if (c != '0')
-                    {
-                        freeBlocks[c - '0'].Add(pos);
-                        pos += c - '0';
-                    }
-                }
-                else
-                {
+                if (!isFree)
                     files.Add((id++, c - '0', pos));
-                    pos += c - '0';
-                }
+                else if (c != '0')
+                    freeBlocksBySize[c - '0'].Add(pos);
 
+                pos += c - '0';
                 isFree = !isFree;
             }
 
@@ -85,22 +78,23 @@ public static class Program
             {
                 var file = files[i];
 
-                var matchingFreeBlocks = freeBlocks
-                    .WithIndex()
-                    .Where(x => x.index >= file.size && x.item.Count > 0 && x.item.Min < file.pos)
+                var matchingFreeBlocks = freeBlocksBySize
+                    .Select((freeBlocks, size) => (freeBlocks, size))
+                    .Where(x => x.size >= file.size && x.freeBlocks.Count > 0 && x.freeBlocks.Min < file.pos)
                     .ToArray();
+                
                 if (matchingFreeBlocks.Length == 0)
                 {
                     newFiles.Add(file);
                     continue;
                 }
 
-                var freeBlock = matchingFreeBlocks.MinBy(x => x.item.Min);
-                var newPos = freeBlock.item.DeleteMin();
+                var freeBlock = matchingFreeBlocks.MinBy(x => x.freeBlocks.Min);
+                var newPos = freeBlock.freeBlocks.DeleteMin();
                 newFiles.Add(file with { pos = newPos });
 
-                if (freeBlock.index > file.size)
-                    freeBlocks[freeBlock.index - file.size].Add(newPos + file.size);
+                if (freeBlock.size > file.size)
+                    freeBlocksBySize[freeBlock.size - file.size].Add(newPos + file.size);
             }
 
             return newFiles.Select(f => Enumerable.Range(0, f.size).Select(i => (f.pos + i) * (long)f.id).Sum()).Sum();
