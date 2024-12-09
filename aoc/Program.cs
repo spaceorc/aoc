@@ -56,7 +56,7 @@ public static class Program
 
         long Part2()
         {
-            var freeBlocks = new List<(int size, int pos)>();
+            var freeBlocks = Enumerable.Range(0, 10).Select(_ => new Heap<int>()).ToArray();
             var files = new List<(int id, int size, int pos)>();
             var id = 0;
             var isFree = false;
@@ -67,7 +67,7 @@ public static class Program
                 {
                     if (c != '0')
                     {
-                        freeBlocks.Add((c - '0', pos));
+                        freeBlocks[c - '0'].Add(pos);
                         pos += c - '0';
                     }
                 }
@@ -84,18 +84,23 @@ public static class Program
             for (var i = files.Count - 1; i >= 0; i--)
             {
                 var file = files[i];
-                var freeBlock = freeBlocks.Where(f => f.size >= file.size).MinBy(x => x.pos);
-                if (freeBlock == default || freeBlock.pos > file.pos)
+
+                var matchingFreeBlocks = freeBlocks
+                    .WithIndex()
+                    .Where(x => x.index >= file.size && x.item.Count > 0 && x.item.Min < file.pos)
+                    .ToArray();
+                if (matchingFreeBlocks.Length == 0)
                 {
                     newFiles.Add(file);
                     continue;
                 }
 
-                newFiles.Add(file with { pos = freeBlock.pos });
-                freeBlocks.Remove(freeBlock);
+                var freeBlock = matchingFreeBlocks.MinBy(x => x.item.Min);
+                var newPos = freeBlock.item.DeleteMin();
+                newFiles.Add(file with { pos = newPos });
 
-                if (freeBlock.size > file.size)
-                    freeBlocks.Add((freeBlock.size - file.size, freeBlock.pos + file.size));
+                if (freeBlock.index > file.size)
+                    freeBlocks[freeBlock.index - file.size].Add(newPos + file.size);
             }
 
             return newFiles.Select(f => Enumerable.Range(0, f.size).Select(i => (f.pos + i) * (long)f.id).Sum()).Sum();
