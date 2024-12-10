@@ -11,7 +11,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day9.txt", Solve_9);
+        Runner.RunFile("day10.txt", Solve_10);
+        // Runner.RunFile("day9.txt", Solve_9);
         // Runner.RunFile("day8.txt", Solve_8);
         // Runner.RunFile("day7.txt", Solve_7);
         // Runner.RunFile("day6.txt", Solve_6);
@@ -20,6 +21,50 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_10(Map<char> map)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        IEnumerable<V> Heads() => map.All().Where(v => map[v] == '0');
+        IEnumerable<V> Next(V v) => v.Area4().Where(n => map.Inside(n) && map[n] == map[v] + 1);
+
+        long Part1() => Heads()
+            .Select(Score1)
+            .Sum();
+
+        long Part2() => Heads()
+            .Select(Score2)
+            .Sum();
+
+        long Score1(V head) => Search.Bfs([head], Next).Count(x => map[x.State] == '9');
+        
+        long Score2(V head)
+        {
+            var queue = new Queue<V>();
+            queue.Enqueue(head);
+            
+            var score = new Map<int>(map.sizeX, map.sizeY)
+            {
+                [head] = 1,
+            };
+
+            while (queue.Count > 0)
+            {
+                var cur = queue.Dequeue();
+                foreach (var next in Next(cur))
+                {
+                    if (score[next] == 0)
+                        queue.Enqueue(next);
+                    score[next] += score[cur];
+                }
+            }
+            
+            return map.All().Where(v => map[v] == '9').Sum(s => score[s]);
+        }
     }
 
     private static void Solve_9(string input)
@@ -57,7 +102,7 @@ public static class Program
         long Part2()
         {
             var freeBlocksBySize = Enumerable.Range(0, 10).Select(_ => new Heap<int>()).ToArray();
-            
+
             var files = new List<(int id, int size, int pos)>();
             var id = 0;
             var isFree = false;
@@ -82,7 +127,7 @@ public static class Program
                     .Select((freeBlocks, size) => (freeBlocks, size))
                     .Where(x => x.size >= file.size && x.freeBlocks.Count > 0 && x.freeBlocks.Min < file.pos)
                     .ToArray();
-                
+
                 if (matchingFreeBlocks.Length == 0)
                 {
                     newFiles.Add(file);
