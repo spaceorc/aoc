@@ -30,28 +30,27 @@ public static class Program
         return;
 
         IEnumerable<V> Heads() => map.All().Where(v => map[v] == '0');
+        IEnumerable<V> Slopes() => map.All().Where(v => map[v] == '9');
         IEnumerable<V> Next(V v) => v.Area4().Where(n => map.Inside(n) && map[n] == map[v] + 1);
 
         long Part1() => Heads()
-            .Select(Score1)
+            .Select(ScoreMap)
+            .Select(score => Slopes().Count(s => score[s] != 0))
             .Sum();
 
         long Part2() => Heads()
-            .Select(Score2)
+            .Select(ScoreMap)
+            .Select(score => Slopes().Sum(s => score[s]))
             .Sum();
 
-        long Score1(V head) => Search.Bfs([head], Next).Count(x => map[x.State] == '9');
-        
-        long Score2(V head)
+        Map<int> ScoreMap(V head)
         {
             var queue = new Queue<V>();
             queue.Enqueue(head);
-            
             var score = new Map<int>(map.sizeX, map.sizeY)
             {
                 [head] = 1,
             };
-
             while (queue.Count > 0)
             {
                 var cur = queue.Dequeue();
@@ -62,8 +61,8 @@ public static class Program
                     score[next] += score[cur];
                 }
             }
-            
-            return map.All().Where(v => map[v] == '9').Sum(s => score[s]);
+
+            return score;
         }
     }
 
