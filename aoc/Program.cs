@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using aoc.Lib;
 using aoc.ParseLib;
+using aoc.ParseLib.Attributes;
 
 namespace aoc;
 
@@ -11,7 +12,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day10.txt", Solve_10);
+        Runner.RunFile("day11.txt", Solve_11);
+        // Runner.RunFile("day10.txt", Solve_10);
         // Runner.RunFile("day9.txt", Solve_9);
         // Runner.RunFile("day8.txt", Solve_8);
         // Runner.RunFile("day7.txt", Solve_7);
@@ -21,6 +23,36 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_11([NonArray] long[] input)
+    {
+        Solve(25).Out("Part 1: ");
+        Solve(75).Out("Part 2: ");
+        return;
+
+        long Solve(int n)
+        {
+            var results = new Dictionary<(long, int), long>();
+            return input.Sum(x => Count(x, n, results));
+        }
+
+        long Count(long x, int n, Dictionary<(long, int), long> results)
+        {
+            if (n == 0)
+                return 1;
+
+            if (results.TryGetValue((x, n), out var result))
+                return result;
+
+            result = x == 0
+                ? Count(1, n - 1, results)
+                : x.ToString() is { } s && s.Length % 2 == 0
+                    ? Count(long.Parse(s[..(s.Length / 2)]), n - 1, results) + Count(long.Parse(s[(s.Length / 2)..]), n - 1, results)
+                    : Count(x * 2024, n - 1, results);
+            results[(x, n)] = result;
+            return result;
+        }
     }
 
     private static void Solve_10(Map<char> map)
