@@ -12,7 +12,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day11.txt", Solve_11);
+        Runner.RunFile("day12.txt", Solve_12);
+        // Runner.RunFile("day11.txt", Solve_11);
         // Runner.RunFile("day10.txt", Solve_10);
         // Runner.RunFile("day9.txt", Solve_9);
         // Runner.RunFile("day8.txt", Solve_8);
@@ -23,6 +24,117 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_12(Map<char> map)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1() => Zones().Sum(z => Perimeter(z) * z.Count);
+        long Part2() => Zones().Sum(z => SidesCount(z) * z.Count);
+
+        List<HashSet<V>> Zones()
+        {
+            var used = new HashSet<V>();
+            var list = new List<HashSet<V>>();
+            foreach (var start in map.All())
+            {
+                if (used.Contains(start))
+                    continue;
+                var zone = Search.Bfs(
+                        [start],
+                        v => v.Area4().Where(n => map.Inside(n) && map[n] == map[start])
+                    )
+                    .Select(x => x.State)
+                    .ToHashSet();
+                used.UnionWith(zone);
+                list.Add(zone);
+            }
+
+            return list;
+        }
+        
+        long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
+
+        long SidesCount(HashSet<V> zone)
+        {
+            var allBounds = zone.SelectMany(
+                    v => new[]
+                    {
+                        (v, v + V.right),
+                        (v + V.right, v + V.right + V.down),
+                        (v + V.right + V.down, v + V.down),
+                        (v + V.down, v),
+                    }
+                )
+                .ToHashSet();
+
+            var valueTuples = allBounds.Where(b => allBounds.Contains((b.Item2, b.Item1))).ToArray();
+            foreach (var valueTuple in valueTuples)
+                allBounds.Remove(valueTuple);
+
+            var startToNext = allBounds.ToLookup(b => b.Item1, b => b.Item2);
+
+            var rounds = new List<List<V>>();
+            var used = new HashSet<(V, V)>();
+
+            foreach (var startGroup in startToNext)
+            {
+                if (startGroup.All(n => used.Contains((startGroup.Key, n))))
+                    continue;
+
+                var round = new List<V>();
+                var cur = startGroup.Key;
+                while (true)
+                {
+                    round.Add(cur);
+                    var next = startToNext[cur].First(n => !used.Contains((cur, n)));
+                    used.Add((cur, next));
+                    cur = next;
+                    if (cur == round[0])
+                        break;
+                }
+
+                rounds.Add(round);
+            }
+
+            var count = 0;
+            foreach (var round in rounds)
+            {
+                var shifts = new List<V>();
+                for (var i = 0; i < round.Count; i++)
+                {
+                    var a = round[i];
+                    var b = round[(i + 1) % round.Count];
+                    shifts.Add(b - a);
+                }
+
+                var start = 0;
+                for (var i = 0; i < shifts.Count; i++)
+                {
+                    if (shifts[i] != shifts[(i + 1) % shifts.Count])
+                    {
+                        start = i;
+                        break;
+                    }
+                }
+
+                var prev = shifts[start];
+                for (var i = 0; i < shifts.Count; i++)
+                {
+                    var next = shifts[(start + i + 1) % shifts.Count];
+                    if (prev != next)
+                    {
+                        count++;
+                        prev = next;
+                    }
+                }
+            }
+
+            return count;
+        }
     }
 
     private static void Solve_11([NonArray] long[] input)
