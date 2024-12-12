@@ -35,6 +35,15 @@ public static class Program
         long Part1() => Zones().Sum(z => Perimeter(z) * z.Count);
         long Part2() => Zones().Sum(z => CornersCount(z) * z.Count);
 
+        long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
+        long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
+        long RingCornersCount(List<V> ring) => ring.Count(
+            (v, i) => V.XProd(
+                          ring[(i + 1) % ring.Count] - v,
+                          ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
+                      ) != 0
+        );
+
         List<HashSet<V>> Zones()
         {
             var used = new HashSet<V>();
@@ -55,17 +64,6 @@ public static class Program
 
             return list;
         }
-        
-        long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
-        
-        long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
-
-        long RingCornersCount(List<V> ring) => ring.Count(
-            (v, i) => V.XProd(
-                          ring[(i + 1) % ring.Count] - v,
-                          ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
-                      ) != 0
-        );
 
         List<List<V>> WalkAround(HashSet<V> zone)
         {
