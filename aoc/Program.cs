@@ -33,7 +33,7 @@ public static class Program
         return;
 
         long Part1() => Zones().Sum(z => Perimeter(z) * z.Count);
-        long Part2() => Zones().Sum(z => SidesCount(z) * z.Count);
+        long Part2() => Zones().Sum(z => CornersCount(z) * z.Count);
 
         List<HashSet<V>> Zones()
         {
@@ -57,83 +57,66 @@ public static class Program
         }
         
         long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
+        
+        long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
 
-        long SidesCount(HashSet<V> zone)
+        long RingCornersCount(List<V> ring)
         {
-            var allBounds = zone.SelectMany(
+            var corners = 0;
+            for (var i = 0; i < ring.Count; i++)
+            {
+                var a = ring[i];
+                var b = ring[(i + 1) % ring.Count];
+                var c = ring[(i + 2) % ring.Count];
+                if (V.XProd(b - a, c - b) != 0)
+                    corners++;
+            }
+
+            return corners;
+        }
+
+        List<List<V>> WalkAround(HashSet<V> zone)
+        {
+            var boundaries = zone.SelectMany(
                     v => new[]
                     {
-                        (v, v + V.right),
-                        (v + V.right, v + V.right + V.down),
-                        (v + V.right + V.down, v + V.down),
-                        (v + V.down, v),
+                        (start: v, end: v + V.right),
+                        (start: v + V.right, end: v + V.right + V.down),
+                        (start: v + V.right + V.down, end: v + V.down),
+                        (start: v + V.down, end: v),
                     }
                 )
                 .ToHashSet();
-
-            var valueTuples = allBounds.Where(b => allBounds.Contains((b.Item2, b.Item1))).ToArray();
-            foreach (var valueTuple in valueTuples)
-                allBounds.Remove(valueTuple);
-
-            var startToNext = allBounds.ToLookup(b => b.Item1, b => b.Item2);
-
-            var rounds = new List<List<V>>();
-            var used = new HashSet<(V, V)>();
-
-            foreach (var startGroup in startToNext)
+            var boundariesToRemove = boundaries.Where(b => boundaries.Contains((b.end, b.start))).ToArray();
+            foreach (var boundary in boundariesToRemove)
+                boundaries.Remove(boundary);
+            
+            var startToEnd = boundaries.ToLookup(b => b.start, b => b.end);
+            
+            var rings = new List<List<V>>();
+            var used = new HashSet<(V start, V end)>();
+            
+            foreach (var startGroup in startToEnd)
             {
                 if (startGroup.All(n => used.Contains((startGroup.Key, n))))
                     continue;
-
-                var round = new List<V>();
+                
+                var ring = new List<V>();
                 var cur = startGroup.Key;
                 while (true)
                 {
-                    round.Add(cur);
-                    var next = startToNext[cur].First(n => !used.Contains((cur, n)));
+                    ring.Add(cur);
+                    var next = startToEnd[cur].First(n => !used.Contains((cur, n)));
                     used.Add((cur, next));
                     cur = next;
-                    if (cur == round[0])
+                    if (cur == ring[0])
                         break;
                 }
-
-                rounds.Add(round);
+                
+                rings.Add(ring);
             }
-
-            var count = 0;
-            foreach (var round in rounds)
-            {
-                var shifts = new List<V>();
-                for (var i = 0; i < round.Count; i++)
-                {
-                    var a = round[i];
-                    var b = round[(i + 1) % round.Count];
-                    shifts.Add(b - a);
-                }
-
-                var start = 0;
-                for (var i = 0; i < shifts.Count; i++)
-                {
-                    if (shifts[i] != shifts[(i + 1) % shifts.Count])
-                    {
-                        start = i;
-                        break;
-                    }
-                }
-
-                var prev = shifts[start];
-                for (var i = 0; i < shifts.Count; i++)
-                {
-                    var next = shifts[(start + i + 1) % shifts.Count];
-                    if (prev != next)
-                    {
-                        count++;
-                        prev = next;
-                    }
-                }
-            }
-
-            return count;
+            
+            return rings;
         }
     }
 
