@@ -60,20 +60,12 @@ public static class Program
         
         long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
 
-        long RingCornersCount(List<V> ring)
-        {
-            var corners = 0;
-            for (var i = 0; i < ring.Count; i++)
-            {
-                var a = ring[i];
-                var b = ring[(i + 1) % ring.Count];
-                var c = ring[(i + 2) % ring.Count];
-                if (V.XProd(b - a, c - b) != 0)
-                    corners++;
-            }
-
-            return corners;
-        }
+        long RingCornersCount(List<V> ring) => ring.Count(
+            (v, i) => V.XProd(
+                          ring[(i + 1) % ring.Count] - v,
+                          ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
+                      ) != 0
+        );
 
         List<List<V>> WalkAround(HashSet<V> zone)
         {

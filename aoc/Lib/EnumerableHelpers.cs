@@ -120,6 +120,11 @@ public static class EnumerableHelpers
         return items.Select(predicate).All(x => x);
     }
 
+    public static int Count<T>(this IEnumerable<T> items, Func<T, int, bool> predicate)
+    {
+        return items.Select(predicate).Count(x => x);
+    }
+
     public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> items)
     {
         return items.Select((v, i) => (v, i));
