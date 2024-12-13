@@ -50,20 +50,25 @@ public static class Program
 
         long Solve(V a, V b, V target)
         {
-            /*
-             * a * na + b * nb = target
-             */
-            
-            if (a.Y * b.X - b.Y * a.X == 0)
+            var m = Matrix.Rows(
+                [a.X, b.X],
+                [a.Y, b.Y]
+            );
+            var t = Matrix.Col(
+                target.X,
+                target.Y
+            );
+            if (m.Invert() is not { } mInv)
                 return 0;
             
-            var nb = (a.Y * target.X - target.Y * a.X) / (a.Y * b.X - b.Y * a.X);
-            var na = (target.X - b.X * nb) / a.X;
+            var n = mInv * t;
+            var na = n[0, 0];
+            var nb = n[1, 0];
             
-            if (na * a + nb * b != target)
+            if (!na.IsInt() || !nb.IsInt() || na < 0 || nb < 0)
                 return 0;
             
-            return 3 * na + nb;
+            return 3 * na.ToLong() + nb.ToLong();
         }
     }
 
