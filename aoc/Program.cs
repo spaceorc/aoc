@@ -12,7 +12,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day12.txt", Solve_12);
+        Runner.RunFile("day13.txt", Solve_13);
+        // Runner.RunFile("day12.txt", Solve_12);
         // Runner.RunFile("day11.txt", Solve_11);
         // Runner.RunFile("day10.txt", Solve_10);
         // Runner.RunFile("day9.txt", Solve_9);
@@ -24,6 +25,46 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_13(
+        [Template(
+            """
+            Button A: {a}
+            Button B: {b}
+            Prize: {target}
+            """
+        )]
+        [Atom("XY+,=", Target = "a")]
+        [Atom("XY+,=", Target = "b")]
+        [Atom("XY+,=", Target = "target")]
+        params (V a, V b, V target)[] input
+    )
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1() => input.Sum(x => Solve(x.a, x.b, x.target));
+        long Part2() => input.Sum(x => Solve(x.a, x.b, x.target + new V(10000000000000, 10000000000000)));
+
+        long Solve(V a, V b, V target)
+        {
+            /*
+             * a * na + b * nb = target
+             */
+            
+            if (a.Y * b.X - b.Y * a.X == 0)
+                return 0;
+            
+            var nb = (a.Y * target.X - target.Y * a.X) / (a.Y * b.X - b.Y * a.X);
+            var na = (target.X - b.X * nb) / a.X;
+            
+            if (na * a + nb * b != target)
+                return 0;
+            
+            return 3 * na + nb;
+        }
     }
 
     private static void Solve_12(Map<char> map)
