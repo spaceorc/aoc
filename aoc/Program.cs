@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using aoc.Lib;
 using aoc.ParseLib;
@@ -12,7 +14,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day13.txt", Solve_13);
+        Runner.RunFile("day14.txt", Solve_14);
+        // Runner.RunFile("day13.txt", Solve_13);
         // Runner.RunFile("day12.txt", Solve_12);
         // Runner.RunFile("day11.txt", Solve_11);
         // Runner.RunFile("day10.txt", Solve_10);
@@ -25,6 +28,40 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_14([Atom("pv=, ")] (V p, V v)[] input)
+    {
+        var size = new V(101, 103);
+        
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1() => Calc(input.Generate(Move).Take(101).Last());
+        long Part2() => input.Generate(Move).TakeUntil(ContainsChristmasTree).SkipLast(1).Count();
+        
+        (V p, V v)[] Move((V p, V v)[] state) => state.Select(s => s with {p = (s.p + s.v).Mod(size)}).ToArray();
+        long Calc((V p, V v)[] state) => Quadrants().Product(q => state.Count(s => q.Contains(s.p)));
+
+        R2[] Quadrants() =>
+        [
+            new R2(V.Zero, size / 2),
+            new R2(V.Zero, size / 2).ShiftX(size.X / 2 + 1),
+            new R2(V.Zero, size / 2).ShiftY(size.Y / 2 + 1),
+            new R2(V.Zero, size / 2).Shift(size / 2 + new V(1, 1)),
+        ];
+
+        bool ContainsChristmasTree((V p, V v)[] state) => BuildMap(state).Dump().Contains(new string('#', 20));
+
+        Map<char> BuildMap((V p, V v)[] state)
+        {
+            var map = new Map<char>((int)size.X, (int)size.Y);
+            map.Fill('.');
+            foreach (var (p, _) in state) 
+                map[p] = '#';
+            return map;
+        }
     }
 
     private static void Solve_13(

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace aoc.Lib;
 
@@ -167,10 +168,10 @@ public class Map<T>
             yield return Row(y).ToArray();
     }
 
-    public IEnumerable<string> RowsStrings()
+    public IEnumerable<string> RowsStrings(string separator = "")
     {
         for (var y = 0; y < sizeY; y++)
-            yield return RowString(y);
+            yield return RowString(y, separator);
     }
 
     public IEnumerable<T> ValuesAt(IEnumerable<V> vs)
@@ -244,5 +245,15 @@ public class Map<T>
             result[new V(x, y)] = selector(linesArr[y][x]);
 
         return result;
+    }
+    
+    public string Dump(string separator = "")
+    {
+       return string.Join("\n", RowsStrings(separator));
+    }
+
+    public void Print()
+    {
+        Console.WriteLine(Dump());
     }
 }

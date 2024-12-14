@@ -55,6 +55,10 @@ public class Square(V topLeft, V bottomRight) : IEquatable<Square>
     }
 
     public Square Grow(long delta) => new(TopLeft - new V(delta, delta), BottomRight + new V(delta, delta));
+    public Square Shift(V delta) => new(TopLeft + delta, BottomRight + delta);
+    public Square ShiftX(long delta) => new(TopLeft + new V(delta, 0), BottomRight + new V(delta, 0));
+    public Square ShiftY(long delta) => new(TopLeft + new V(0, delta), BottomRight + new V(0, delta));
+    public bool Contains(V v) => v.X >= MinX && v.X <= MaxX && v.Y >= MinY && v.Y <= MaxY;
     public bool IsEmpty() => MinX > MaxX || MinY > MaxY;
 
     public IEnumerable<V> All()
