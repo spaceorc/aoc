@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,7 +15,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day14.txt", Solve_14);
+        Runner.RunFile("day15.txt", Solve_15);
+        // Runner.RunFile("day14.txt", Solve_14);
         // Runner.RunFile("day13.txt", Solve_13);
         // Runner.RunFile("day12.txt", Solve_12);
         // Runner.RunFile("day11.txt", Solve_11);
@@ -28,6 +30,156 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_15(Map<char> map, string moves)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1()
+        {
+            var m = map.Clone();
+            foreach (var move in moves.Where(m => m is '>' or '<' or '^' or 'v'))
+            {
+                var dir = move switch
+                {
+                    '>' => V.right,
+                    '<' => V.left,
+                    '^' => V.up,
+                    'v' => V.down,
+                    _ => throw new InvalidOperationException(),
+                };
+                Move(m, dir);
+            }
+            
+            return m.All().Where(v => m[v] == 'O').Sum(v => v.X + v.Y * 100);
+        }
+
+        int Way(Map<char> m, V dir)
+        {
+            var robot = m.All().Single(v => m[v] == '@');
+            var count = 0;
+            while (true)
+            {
+                robot += dir;
+                if (m[robot] == '#')
+                    return 0;
+                count++;
+                if (m[robot] == '.')
+                    return count;
+            }
+        }
+        
+        void Move(Map<char> m, V dir)
+        {
+            var count = Way(m, dir);
+            if (count == 0)
+                return;
+            
+            var robot = m.All().Single(v => m[v] == '@');
+            m[robot] = '.';
+            m[robot + dir] = '@';
+            if (count > 1)
+                m[robot + dir * count] = 'O';
+        }
+
+        long Part2()
+        {
+            var walls = map.All().Where(v => map[v] == '#').SelectMany(v => new[] { v with { X = v.X * 2 }, v with { X = v.X * 2 + 1 } }).ToHashSet();
+            var robot = map.All().Where(v => map[v] == '@').Select(v => v with { X = v.X * 2 }).Single();
+            var boxes = map.All().Where(v => map[v] == 'O').Select(v => v with { X = v.X * 2 }).ToHashSet();
+            
+            foreach (var move in moves)
+            {
+                switch (move)
+                {
+                    case '>':
+                        MoveBoxesLeftRight(V.right);
+                        break;
+                    case '<':
+                        MoveBoxesLeftRight(V.left);
+                        break;
+                    case '^':
+                        MoveBoxesUpDown(V.up);
+                        break;
+                    case 'v':
+                        MoveBoxesUpDown(V.down);
+                        break;
+                }
+            }
+
+            return boxes.Sum(v => v.X + v.Y * 100);
+
+            void MoveBoxesLeftRight(V dir)
+            {
+                var allBoxesToMove = new HashSet<V>();
+                var boxesToMove = new List<V>();
+                var newRobot = robot + dir;
+                if (walls.Contains(newRobot))
+                    return;
+                if (boxes.Contains(newRobot))
+                    boxesToMove.Add(newRobot);
+                if (boxes.Contains(newRobot - new V(1, 0)))
+                    boxesToMove.Add(newRobot - new V(1, 0));
+                while (boxesToMove.Count > 0)
+                {
+                    allBoxesToMove.UnionWith(boxesToMove);
+                    var nextBoxes = new List<V>();
+                    foreach (var v in boxesToMove.SelectMany(b => new[] { b, b + new V(1, 0) }))
+                    {
+                        var n = v + dir;
+                        if (walls.Contains(n))
+                            return;
+                        if (boxes.Contains(n))
+                            nextBoxes.Add(n);
+                        if (boxes.Contains(n - new V(1, 0)))
+                            nextBoxes.Add(n - new V(1, 0));
+                    }
+
+                    boxesToMove = nextBoxes.Except(boxesToMove).ToList();
+                }
+                
+                robot = newRobot;
+                boxes.ExceptWith(allBoxesToMove);
+                boxes.UnionWith(allBoxesToMove.Select(v => v + dir));   
+            }
+
+            void MoveBoxesUpDown(V dir)
+            {
+                var allBoxesToMove = new HashSet<V>();
+                var boxesToMove = new List<V>();
+                var newRobot = robot + dir;
+                if (walls.Contains(newRobot))
+                    return;
+                if (boxes.Contains(newRobot))
+                    boxesToMove.Add(newRobot);
+                if (boxes.Contains(newRobot - new V(1, 0)))
+                    boxesToMove.Add(newRobot - new V(1, 0));
+                while (boxesToMove.Count > 0)
+                {
+                    allBoxesToMove.UnionWith(boxesToMove);
+                    var nextBoxes = new List<V>();
+                    foreach (var v in boxesToMove.SelectMany(b => new[] { b, b + new V(1, 0) }))
+                    {
+                        var n = v + dir;
+                        if (walls.Contains(n))
+                            return;
+                        if (boxes.Contains(n))
+                            nextBoxes.Add(n);
+                        if (boxes.Contains(n - new V(1, 0)))
+                            nextBoxes.Add(n - new V(1, 0));
+                    }
+
+                    boxesToMove = nextBoxes;
+                }
+                
+                robot = newRobot;
+                boxes.ExceptWith(allBoxesToMove);
+                boxes.UnionWith(allBoxesToMove.Select(v => v + dir));
+            }
+        }
     }
 
     private static void Solve_14([Atom("pv=, ")] (V p, V v)[] input)
