@@ -118,6 +118,16 @@ public class Map<T>
         return V.area8.Select(dv => v + dv).Where(Inside);
     }
 
+    public IEnumerable<V> Ray(V start, V direction)
+    {
+        var v = start;
+        while (Inside(v))
+        {
+            yield return v;
+            v += direction;
+        }
+    }
+    
     public IEnumerable<V> Column(long x)
     {
         for (var y = 0; y < sizeY; y++)
