@@ -55,24 +55,22 @@ public static class Program
             var start = map.All().Single(v => map[v] == 'S');
             var end = map.All().Single(v => map[v] == 'E');
 
-            var forward = Search
+            var search = Search
                 .Dijkstra([new Walker(start, Dir.Right)], Next)
-                .ToDictionary(x => x.State, x => x.Distance);
-            var backward = Search
-                .Dijkstra(Enumerable.Range(0, 4).Select(d => new Walker(end, (Dir)d)), Next)
-                .ToDictionary(x => x.State.TurnCW(2), x => x.Distance);
-            var distance = forward 
-                .First(x => x.Key.Pos == end)
-                .Value;
+                .ToArray();
             
-            return forward.Select(x => x.Key)
-                .Intersect(forward.Select(x => x.Key))
-                .Where(s => forward[s] + backward[s] == distance)
-                .Select(s => s.Pos)
+            var distance = search
+                .First(x => x.State.Pos == end)
+                .Distance; 
+                
+            return search
+                .Where(x => x.State.Pos == end && x.Distance == distance)
+                .SelectMany(x => x.AllPrevsBack())
+                .Select(x => x.Pos)
                 .Distinct()
                 .Count();
         }
-
+        
         IEnumerable<(Walker state, long distance)> Next(Walker walker)
         {
             yield return (walker.TurnCW(), 1000L);

@@ -32,8 +32,12 @@ public static class Search
 
             foreach (var next in getNextStates(cur))
             {
-                if (used.ContainsKey(next))
+                if (used.TryGetValue(next, out var prev))
+                {
+                    if (prev.Distance <= curItem.Distance + 1)
+                        prev.Prevs.Add(curItem);
                     continue;
+                }
 
                 used.Add(next, new SearchPathItem<TState>(next, curItem.Distance + 1, curItem));
                 queue.Enqueue(next);
@@ -68,8 +72,16 @@ public static class Search
 
             foreach (var (nextState, distance) in getNextStates(cur))
             {
-                if (used.TryGetValue(nextState, out var prevItem) && prevItem.Distance <= curItem.Distance + distance)
-                    continue;
+                if (used.TryGetValue(nextState, out var prevItem))
+                {
+                    if (prevItem.Distance == curItem.Distance + distance)
+                    {
+                        prevItem.Prevs.Add(curItem);
+                        continue;
+                    }
+                    if (prevItem.Distance < curItem.Distance + distance)
+                        continue;
+                }
 
                 used[nextState] = new SearchPathItem<TState>(nextState, curItem.Distance + distance, curItem);
                 queue.Enqueue(nextState, new SearchPathItem<TState>(nextState, curItem.Distance + distance, curItem).Distance);
