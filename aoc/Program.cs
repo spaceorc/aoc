@@ -55,37 +55,20 @@ public static class Program
             var start = map.All().Single(v => map[v] == 'S');
             var end = map.All().Single(v => map[v] == 'E');
 
-            var distance = Search
+            var forward = Search
                 .Dijkstra([new Walker(start, Dir.Right)], Next)
-                .First(x => x.State.Pos == end)
-                .Distance;
-
-            var result = Enumerable.Range(0, (int)distance + 1).Select(_ => new Dictionary<Walker, List<(long prevDist, Walker prevWalker)>>()).ToArray();
-            result[0].Add(new Walker(start, Dir.Right), []);
-            for (int d = 0; d < distance; d++)
-            {
-                // Console.WriteLine(d);
-                foreach (var (w, _) in result[d])
-                {
-                    foreach (var (nw, nd) in Next(w))
-                    {
-                        if (d + nd > distance)
-                            continue;
-                        if (!result[d + nd].TryGetValue(nw, out var list))
-                        {
-                            list = [];
-                            result[d + nd].Add(nw, list);
-                        }
-                        list.Add((d, w));
-                    }
-                }
-            }
-
-            return Search.Bfs(
-                result[distance].Where(x => x.Key.Pos == end).Select(x => (walker: x.Key, dist: distance)),
-                x => result[x.dist][x.walker].Select(x => (walker: x.prevWalker, dist: x.prevDist))
-            )
-                .Select(x => x.State.walker.Pos)
+                .ToDictionary(x => x.State, x => x.Distance);
+            var backward = Search
+                .Dijkstra(Enumerable.Range(0, 4).Select(d => new Walker(end, (Dir)d)), Next)
+                .ToDictionary(x => x.State.TurnCW(2), x => x.Distance);
+            var distance = forward 
+                .First(x => x.Key.Pos == end)
+                .Value;
+            
+            return forward.Select(x => x.Key)
+                .Intersect(forward.Select(x => x.Key))
+                .Where(s => forward[s] + backward[s] == distance)
+                .Select(s => s.Pos)
                 .Distinct()
                 .Count();
         }
