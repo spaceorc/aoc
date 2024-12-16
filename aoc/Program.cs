@@ -15,7 +15,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day15.txt", Solve_15);
+        Runner.RunFile("day16.txt", Solve_16);
+        // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
         // Runner.RunFile("day13.txt", Solve_13);
         // Runner.RunFile("day12.txt", Solve_12);
@@ -30,6 +31,72 @@ public static class Program
         // Runner.RunFile("day3.txt", Solve_3);
         // Runner.RunFile("day2.txt", Solve_2);
         // Runner.RunFile("day1.txt", Solve_1);
+    }
+
+    private static void Solve_16(Map<char> map)
+    {
+        Part1().Out("Part 1: ");
+        Part2().Out("Part 2: ");
+        return;
+
+        long Part1()
+        {
+            var start = map.All().Single(v => map[v] == 'S');
+            var end = map.All().Single(v => map[v] == 'E');
+
+            return Search
+                .Dijkstra([new Walker(start, Dir.Right)], Next)
+                .First(x => x.State.Pos == end)
+                .Distance;
+        }
+
+        long Part2()
+        {
+            var start = map.All().Single(v => map[v] == 'S');
+            var end = map.All().Single(v => map[v] == 'E');
+
+            var distance = Search
+                .Dijkstra([new Walker(start, Dir.Right)], Next)
+                .First(x => x.State.Pos == end)
+                .Distance;
+
+            var result = Enumerable.Range(0, (int)distance + 1).Select(_ => new Dictionary<Walker, List<(long prevDist, Walker prevWalker)>>()).ToArray();
+            result[0].Add(new Walker(start, Dir.Right), []);
+            for (int d = 0; d < distance; d++)
+            {
+                // Console.WriteLine(d);
+                foreach (var (w, _) in result[d])
+                {
+                    foreach (var (nw, nd) in Next(w))
+                    {
+                        if (d + nd > distance)
+                            continue;
+                        if (!result[d + nd].TryGetValue(nw, out var list))
+                        {
+                            list = [];
+                            result[d + nd].Add(nw, list);
+                        }
+                        list.Add((d, w));
+                    }
+                }
+            }
+
+            return Search.Bfs(
+                result[distance].Where(x => x.Key.Pos == end).Select(x => (walker: x.Key, dist: distance)),
+                x => result[x.dist][x.walker].Select(x => (walker: x.prevWalker, dist: x.prevDist))
+            )
+                .Select(x => x.State.walker.Pos)
+                .Distinct()
+                .Count();
+        }
+
+        IEnumerable<(Walker state, long distance)> Next(Walker walker)
+        {
+            yield return (walker.TurnCW(), 1000L);
+            yield return (walker.TurnCCW(), 1000L);
+            if (map[walker.Forward().Pos] != '#')
+                yield return (walker.Forward(), 1L);
+        }
     }
 
     private static void Solve_15(Map<char> inputMap, string moves)
