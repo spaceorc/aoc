@@ -14,6 +14,7 @@ using aoc.aoc2024.day5;
 using aoc.aoc2024.day6;
 using aoc.aoc2024.day7;
 using aoc.aoc2024.day8;
+using aoc.aoc2024.day9;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -24,7 +25,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day8>();
+        Runner.Run<Day9>();
         // Runner.Run("day16.txt", Solve_16);
         // Runner.Run("day15.txt", Solve_15);
         // Runner.Run("day14.txt", Solve_14);
@@ -32,7 +33,6 @@ public static class Program
         // Runner.Run("day12.txt", Solve_12);
         // Runner.Run("day11.txt", Solve_11);
         // Runner.Run("day10.txt", Solve_10);
-        // Runner.Run("day9.txt", Solve_9);
     }
 
     private static void Solve_16(Map<char> map)
@@ -60,11 +60,11 @@ public static class Program
             var search = Search
                 .Dijkstra([new Walker(start, Dir.Right)], Next)
                 .ToArray();
-            
+
             var distance = search
                 .First(x => x.State.Pos == end)
-                .Distance; 
-                
+                .Distance;
+
             return search
                 .Where(x => x.State.Pos == end && x.Distance == distance)
                 .SelectMany(x => x.AllPrevsBack())
@@ -72,7 +72,7 @@ public static class Program
                 .Distinct()
                 .Count();
         }
-        
+
         IEnumerable<(Walker state, long distance)> Next(Walker walker)
         {
             yield return (walker.TurnCW(), 1000L);
@@ -93,15 +93,17 @@ public static class Program
             var map = inputMap.Clone();
             foreach (var move in moves.Where(m => m is '>' or '<' or '^' or 'v'))
             {
-                Move(move switch
-                {
-                    '>' => V.right,
-                    '<' => V.left,
-                    '^' => V.up,
-                    'v' => V.down,
-                });
+                Move(
+                    move switch
+                    {
+                        '>' => V.right,
+                        '<' => V.left,
+                        '^' => V.up,
+                        'v' => V.down,
+                    }
+                );
             }
-            
+
             return map.All().Where(v => map[v] == 'O').Sum(v => v.X + v.Y * 100);
 
             void Move(V dir)
@@ -122,17 +124,20 @@ public static class Program
             var walls = inputMap.All().Where(v => inputMap[v] == '#').SelectMany(v => new[] { v with { X = v.X * 2 }, v with { X = v.X * 2 + 1 } }).ToHashSet();
             var robot = inputMap.All().Where(v => inputMap[v] == '@').Select(v => v with { X = v.X * 2 }).Single();
             var boxes = inputMap.All().Where(v => inputMap[v] == 'O').Select(v => v with { X = v.X * 2 }).ToHashSet();
-            
+
             foreach (var move in moves.Where(m => m is '>' or '<' or '^' or 'v'))
             {
-                Move(move switch
-                {
-                    '>' => V.right,
-                    '<' => V.left,
-                    '^' => V.up,
-                    'v' => V.down,
-                });
+                Move(
+                    move switch
+                    {
+                        '>' => V.right,
+                        '<' => V.left,
+                        '^' => V.up,
+                        'v' => V.down,
+                    }
+                );
             }
+
             return boxes.Sum(v => v.X + v.Y * 100);
 
             V[] BoxCoords(V box) => [box, box + new V(1, 0)];
@@ -145,30 +150,32 @@ public static class Program
                     return;
                 if (BoxAt(robot + dir) is { } box)
                 {
-                    if (AllBoxesInDir(box, dir) is not {} boxesToMove)
+                    if (AllBoxesInDir(box, dir) is not { } boxesToMove)
                         return;
                     boxes.ExceptWith(boxesToMove);
                     boxes.UnionWith(boxesToMove.Select(v => v + dir));
                 }
+
                 robot += dir;
             }
-            
+
             V[]? BoxesInDir(V box, V dir) => BoxAtWall(box + dir)
                 ? null
                 : BoxCoords(box + dir)
                     .Select(BoxAt)
                     .Where(b => b is not null && b != box)!
                     .ToArray<V>();
-            
+
             V[]? AllBoxesInDir(V box, V dir)
             {
-                var allBoxes = new List<V>{box};
+                var allBoxes = new List<V> { box };
                 for (var i = 0; i < allBoxes.Count; i++)
                 {
                     if (BoxesInDir(allBoxes[i], dir) is not { } next)
                         return null;
                     allBoxes.AddRange(next);
                 }
+
                 return allBoxes.ToArray();
             }
         }
@@ -177,15 +184,15 @@ public static class Program
     private static void Solve_14([Atom("pv=, ")] (V p, V v)[] input)
     {
         var size = new V(101, 103);
-        
+
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
         return;
 
         long Part1() => Calc(input.Generate(Move).Take(101).Last());
         long Part2() => input.Generate(Move).TakeUntil(ContainsChristmasTree).SkipLast(1).Count();
-        
-        (V p, V v)[] Move((V p, V v)[] state) => state.Select(s => s with {p = (s.p + s.v).Mod(size)}).ToArray();
+
+        (V p, V v)[] Move((V p, V v)[] state) => state.Select(s => s with { p = (s.p + s.v).Mod(size) }).ToArray();
         long Calc((V p, V v)[] state) => Quadrants().Product(q => state.Count(s => q.Contains(s.p)));
 
         R2[] Quadrants() =>
@@ -202,7 +209,7 @@ public static class Program
         {
             var map = new Map<char>((int)size.X, (int)size.Y);
             map.Fill('.');
-            foreach (var (p, _) in state) 
+            foreach (var (p, _) in state)
                 map[p] = '#';
             return map;
         }
@@ -241,14 +248,14 @@ public static class Program
             );
             if (m.Invert() is not { } mInv)
                 return 0;
-            
+
             var n = mInv * t;
             var na = n[0, 0];
             var nb = n[1, 0];
-            
+
             if (!na.IsInt() || !nb.IsInt() || na < 0 || nb < 0)
                 return 0;
-            
+
             return 3 * na.ToLong() + nb.ToLong();
         }
     }
@@ -264,11 +271,13 @@ public static class Program
 
         long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
         long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
+
         long RingCornersCount(List<V> ring) => ring.Count(
             (v, i) => V.XProd(
                           ring[(i + 1) % ring.Count] - v,
                           ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
-                      ) != 0
+                      ) !=
+                      0
         );
 
         List<HashSet<V>> Zones()
@@ -307,17 +316,17 @@ public static class Program
             var boundariesToRemove = boundaries.Where(b => boundaries.Contains((b.end, b.start))).ToArray();
             foreach (var boundary in boundariesToRemove)
                 boundaries.Remove(boundary);
-            
+
             var startToEnd = boundaries.ToLookup(b => b.start, b => b.end);
-            
+
             var rings = new List<List<V>>();
             var used = new HashSet<(V start, V end)>();
-            
+
             foreach (var startGroup in startToEnd)
             {
                 if (startGroup.All(n => used.Contains((startGroup.Key, n))))
                     continue;
-                
+
                 var ring = new List<V>();
                 var cur = startGroup.Key;
                 while (true)
@@ -329,10 +338,10 @@ public static class Program
                     if (cur == ring[0])
                         break;
                 }
-                
+
                 rings.Add(ring);
             }
-            
+
             return rings;
         }
     }
@@ -407,85 +416,6 @@ public static class Program
             }
 
             return score;
-        }
-    }
-
-    private static void Solve_9(string input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1()
-        {
-            var data = new List<int>();
-            var id = 0;
-            var isFree = false;
-            foreach (var c in input)
-            {
-                data.AddRange(isFree ? Enumerable.Repeat(-1, c - '0') : Enumerable.Repeat(id++, c - '0'));
-                isFree = !isFree;
-            }
-
-            var total = data.Count(x => x != -1);
-            var freeIndex = data.IndexOf(-1);
-            for (var i = data.Count - 1; i >= 0; i--)
-            {
-                if (data[i] == -1)
-                    continue;
-                (data[freeIndex], data[i]) = (data[i], data[freeIndex]);
-                freeIndex = data.IndexOf(-1, freeIndex + 1);
-                if (freeIndex >= total)
-                    break;
-            }
-
-            return data.Select((t, i) => t == -1 ? 0 : t * (long)i).Sum();
-        }
-
-        long Part2()
-        {
-            var freeBlocksBySize = Enumerable.Range(0, 10).Select(_ => new Heap<int>()).ToArray();
-
-            var files = new List<(int id, int size, int pos)>();
-            var id = 0;
-            var isFree = false;
-            var pos = 0;
-            foreach (var c in input)
-            {
-                if (!isFree)
-                    files.Add((id++, c - '0', pos));
-                else if (c != '0')
-                    freeBlocksBySize[c - '0'].Add(pos);
-
-                pos += c - '0';
-                isFree = !isFree;
-            }
-
-            var newFiles = new List<(int id, int size, int pos)>();
-            for (var i = files.Count - 1; i >= 0; i--)
-            {
-                var file = files[i];
-
-                var matchingFreeBlocks = freeBlocksBySize
-                    .Select((freeBlocks, size) => (freeBlocks, size))
-                    .Where(x => x.size >= file.size && x.freeBlocks.Count > 0 && x.freeBlocks.Min < file.pos)
-                    .ToArray();
-
-                if (matchingFreeBlocks.Length == 0)
-                {
-                    newFiles.Add(file);
-                    continue;
-                }
-
-                var freeBlock = matchingFreeBlocks.MinBy(x => x.freeBlocks.Min);
-                var newPos = freeBlock.freeBlocks.DeleteMin();
-                newFiles.Add(file with { pos = newPos });
-
-                if (freeBlock.size > file.size)
-                    freeBlocksBySize[freeBlock.size - file.size].Add(newPos + file.size);
-            }
-
-            return newFiles.Select(f => Enumerable.Range(0, f.size).Select(i => (f.pos + i) * (long)f.id).Sum()).Sum();
         }
     }
 }
