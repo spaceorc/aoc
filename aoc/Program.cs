@@ -9,6 +9,7 @@ using aoc.aoc2024.day1;
 using aoc.aoc2024.day17;
 using aoc.aoc2024.day2;
 using aoc.aoc2024.day3;
+using aoc.aoc2024.day4;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -19,7 +20,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day17>();
+        Runner.Run<Day4>();
         // Runner.RunFile("day16.txt", Solve_16);
         // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
@@ -32,7 +33,6 @@ public static class Program
         // Runner.RunFile("day7.txt", Solve_7);
         // Runner.RunFile("day6.txt", Solve_6);
         // Runner.RunFile("day5.txt", Solve_5);
-        // Runner.RunFile("day4.txt", Solve_4);
     }
 
     private static void Solve_16(Map<char> map)
@@ -622,36 +622,6 @@ public static class Program
                 .ToLookup(r => r.after, r => r.before);
 
             return update.TopSort(e => deps[e]).ToArray();
-        }
-    }
-
-    private static void Solve_4(Map<char> input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1()
-        {
-            const string pattern = "XMAS";
-            return input
-                .All()
-                .Sum(start => V.area8.Count(d => pattern.All((c, i) => input.At(start + d * i) == c)));
-        }
-
-        long Part2()
-        {
-            const string pattern = "MAS";
-            var allDirs = new V[][]
-            {
-                [new V(-1, -1), new V(0, 0), new V(1, 1)],
-                [new V(-1, 1), new V(0, 0), new V(1, -1)],
-                [new V(1, -1), new V(0, 0), new V(-1, 1)],
-                [new V(1, 1), new V(0, 0), new V(-1, -1)],
-            };
-            return input
-                .All()
-                .Count(center => allDirs.Count(dirs => pattern.All((c, i) => input.At(center + dirs[i]) == c)) == 2);
         }
     }
 }
