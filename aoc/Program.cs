@@ -13,6 +13,7 @@ using aoc.aoc2024.day4;
 using aoc.aoc2024.day5;
 using aoc.aoc2024.day6;
 using aoc.aoc2024.day7;
+using aoc.aoc2024.day8;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -23,16 +24,15 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day7>();
-        // Runner.RunFile("day16.txt", Solve_16);
-        // Runner.RunFile("day15.txt", Solve_15);
-        // Runner.RunFile("day14.txt", Solve_14);
-        // Runner.RunFile("day13.txt", Solve_13);
-        // Runner.RunFile("day12.txt", Solve_12);
-        // Runner.RunFile("day11.txt", Solve_11);
-        // Runner.RunFile("day10.txt", Solve_10);
-        // Runner.RunFile("day9.txt", Solve_9);
-        // Runner.RunFile("day8.txt", Solve_8);
+        Runner.Run<Day8>();
+        // Runner.Run("day16.txt", Solve_16);
+        // Runner.Run("day15.txt", Solve_15);
+        // Runner.Run("day14.txt", Solve_14);
+        // Runner.Run("day13.txt", Solve_13);
+        // Runner.Run("day12.txt", Solve_12);
+        // Runner.Run("day11.txt", Solve_11);
+        // Runner.Run("day10.txt", Solve_10);
+        // Runner.Run("day9.txt", Solve_9);
     }
 
     private static void Solve_16(Map<char> map)
@@ -487,40 +487,5 @@ public static class Program
 
             return newFiles.Select(f => Enumerable.Range(0, f.size).Select(i => (f.pos + i) * (long)f.id).Sum()).Sum();
         }
-    }
-
-    private static void Solve_8(Map<char> map)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        IEnumerable<V> Antennas() => map.All().Where(v => map[v] is not '.');
-
-        IEnumerable<List<V>> AntennaPairs() => Antennas()
-            .ToLookup(v => map[v])
-            .SelectMany(g => g.ToArray().Combinations(2));
-
-        long Part1() => AntennaPairs()
-            .SelectMany(vs => new[] { vs[0] * 2 - vs[1], vs[1] * 2 - vs[0] })
-            .Where(map.Inside)
-            .Distinct()
-            .Count();
-
-        long Part2() => AntennaPairs()
-            .SelectMany(
-                vs => Enumerable
-                    .Range(0, int.MaxValue)
-                    .Select(n => vs[1] + (vs[1] - vs[0]) * n)
-                    .TakeWhile(map.Inside)
-                    .Concat(
-                        Enumerable
-                            .Range(0, int.MaxValue)
-                            .Select(n => vs[0] - (vs[1] - vs[0]) * n)
-                            .TakeWhile(map.Inside)
-                    )
-            )
-            .Distinct()
-            .Count();
     }
 }
