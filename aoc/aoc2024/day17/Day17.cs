@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using aoc.Lib;
@@ -27,128 +26,85 @@ public class Day17(
 {
     public void Solve()
     {
-        string.Join(",", Part1()).Out("Part 1: ");
+        Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
     }
 
+    private IEnumerable<int> Run(int a) => new State(a, regs.b, regs.c, 0).Run(ops);
+
+    private string Part1() => string.Join(',', Run(regs.a));
+
     private long Part2()
     {
-        var variants = new List<List<int>>();
-        for (int o = 0; o <= 7; o++)
-        {
-            variants.Add(new List<int>());
-            for (var a = 0; a <= 0b111_111_111_111; a++)
-            {
-                var b = a & 0b111 ^ 1;
-                b ^= a >> b;
-                b ^= 6;
-                b &= 0b111;
-                if (b == o)
-                    variants[^1].Add(a);
-            }
-        }
+        var opsVariants = ops
+            .Skip(1)
+            .Scan(
+                GetVariants(ops[0]),
+                (prev, op) => GetVariants(op)
+                    .Where(v => prev.Any(cv => VariantsMatch(cv, v)))
+                    .ToArray()
+            )
+            .ToArray();
 
-        var opsVariants = new List<List<int>>
-        {
-            variants[ops[0]],
-        };
-
-        for (var i = 1; i < ops.Length; i++)
-        {
-            var nextVariants = variants[ops[i]]
-                .Where(v => opsVariants[^1].Any(cv => cv >> 3 == (v & 0b000_111_111_111)))
-                .ToList();
-            opsVariants.Add(nextVariants);
-        }
-
-        for (int i = opsVariants.Count - 1; i >= 0; i--)
-        {
-            opsVariants[i] = opsVariants[i].Order().Take(1).ToList();
-            if (i > 0)
-                opsVariants[i - 1] = opsVariants[i - 1]
-                    .Where(cv => opsVariants[i].Any(v => cv >> 3 == (v & 0b000_111_111_111)))
-                    .ToList();
-        }
-
-        var result = (long)opsVariants[^1][0];
-        for (int i = opsVariants.Count - 2; i >= 0; i--)
-        {
-            result <<= 3;
-            result |= opsVariants[i][0] & 0b111L;
-        }
-
-
-        return result;
+        return opsVariants
+            .Reverse()
+            .Skip(1)
+            .Scan(
+                opsVariants[^1].Min(),
+                (variant, prev) => prev.Where(cv => VariantsMatch(cv, variant)).Min()
+            )
+            .Aggregate(0L, (acc, v) => (acc << 3) | v);
     }
 
-    private List<int> Part1()
+    private int[] GetVariants(int op) => Enumerable
+        .Range(0, 0b1_000_000_000_000)
+        .Where(a => Run(a).First() == op)
+        .ToArray();
+
+    private static bool VariantsMatch(int prev, int next) => prev >> 3 == (next & 0b000_111_111_111);
+
+    private record State(int A, int B, int C, int Ip)
     {
-        var ip = 0;
-        var a = regs.a;
-        var b = regs.b;
-        var c = regs.c;
+        private const int adv = 0;
+        private const int bxl = 1;
+        private const int bst = 2;
+        private const int jnz = 3;
+        private const int bxc = 4;
+        private const int @out = 5;
+        private const int bdv = 6;
+        private const int cdv = 7;
 
-        var result = new List<int>();
-        while (ip < ops.Length)
+        private int Combo(int literal) => literal switch
         {
-            var op = ops[ip++];
-            var literal = ops[ip++];
-            var combo = literal switch
+            >= 0 and <= 3 => literal,
+            4 => A,
+            5 => B,
+            6 => C,
+        };
+
+        public State Next(int op, int arg) => op switch
+        {
+            adv => this with { A = A >> Combo(arg), Ip = Ip + 2 },
+            bxl => this with { B = B ^ arg, Ip = Ip + 2 },
+            bst => this with { B = Combo(arg) & 0b111, Ip = Ip + 2 },
+            jnz => A != 0 ? this with { Ip = arg } : this with { Ip = Ip + 2 },
+            bxc => this with { B = B ^ C, Ip = Ip + 2 },
+            @out => this with { Ip = Ip + 2 },
+            bdv => this with { B = A >> Combo(arg), Ip = Ip + 2 },
+            cdv => this with { C = A >> Combo(arg), Ip = Ip + 2 },
+        };
+
+        public IEnumerable<int> Run(int[] ops)
+        {
+            var state = this;
+            while (state.Ip < ops.Length)
             {
-                >= 0 and <= 3 => literal,
-                4 => a,
-                5 => b,
-                6 => c,
-                _ => int.MaxValue,
-            };
-            switch (op)
-            {
-                case 0:
-                    // adv
-                    a >>= combo;
-                    break;
-
-                case 1:
-                    // bxl
-                    b ^= literal;
-                    break;
-
-                case 2:
-                    // bst
-                    b = combo & 0b111;
-                    break;
-
-                case 3:
-                    // jnz
-                    if (a != 0)
-                        ip = literal;
-                    break;
-
-                case 4:
-                    // bxc
-                    b ^= c;
-                    break;
-
-                case 5:
-                    // out
-                    result.Add(combo & 0b111);
-                    break;
-
-                case 6:
-                    // bdv
-                    b = a >> combo;
-                    break;
-
-                case 7:
-                    // cdv
-                    c = a >> combo;
-                    break;
-
-                default:
-                    throw new InvalidOperationException($"Invalid op code {op}");
+                var op = ops[state.Ip];
+                var arg = ops[state.Ip + 1];
+                if (op == @out)
+                    yield return state.Combo(arg) & 0b111;
+                state = state.Next(op, arg);
             }
         }
-
-        return result;
     }
 }
