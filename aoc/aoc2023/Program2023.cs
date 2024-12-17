@@ -14,7 +14,7 @@ public static class Program2023
 {
     private static void Main2023()
     {
-        Runner.RunFile("day25.txt", Solve_25);
+        Runner.Run("day25.txt", Solve_25);
         // Runner.RunFile("day24.txt", Solve_24);
         // Runner.RunFile("day23.txt", Solve_23);
         // Runner.RunFile("day22.txt", Solve_22);

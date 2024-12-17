@@ -1,0 +1,14 @@
+Register A: 25358015
+Register B: 0
+Register C: 0
+
+Program:
+
+while A > 0:
+    B = A mod 3    
+    B = B ^ 1      
+    B = B ^ (A >> B)
+    B = B ^ 6
+    out (B mod 3)
+    A = A >> 3    
+

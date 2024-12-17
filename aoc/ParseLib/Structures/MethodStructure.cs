@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace aoc.ParseLib.Structures;
 
-public record MethodStructure(MethodInfo Method, TypeStructure Parameters)
+public record MethodStructure(MethodBase Method, TypeStructure Parameters)
 {
-    public static MethodStructure CreateStructure(MethodInfo methodInfo)
+    public static MethodStructure CreateStructure(MethodBase methodInfo)
     {
         var parameterInfos = methodInfo.GetParameters();
         var parameterTypes = parameterInfos.Select(p => p.ParameterType).ToArray();

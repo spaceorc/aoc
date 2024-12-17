@@ -5,6 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using aoc.aoc2024.day1;
+using aoc.aoc2024.day17;
+using aoc.aoc2024.day2;
+using aoc.aoc2024.day3;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -15,7 +19,8 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.RunFile("day16.txt", Solve_16);
+        Runner.Run<Day17>();
+        // Runner.RunFile("day16.txt", Solve_16);
         // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
         // Runner.RunFile("day13.txt", Solve_13);
@@ -28,9 +33,6 @@ public static class Program
         // Runner.RunFile("day6.txt", Solve_6);
         // Runner.RunFile("day5.txt", Solve_5);
         // Runner.RunFile("day4.txt", Solve_4);
-        // Runner.RunFile("day3.txt", Solve_3);
-        // Runner.RunFile("day2.txt", Solve_2);
-        // Runner.RunFile("day1.txt", Solve_1);
     }
 
     private static void Solve_16(Map<char> map)
@@ -650,69 +652,6 @@ public static class Program
             return input
                 .All()
                 .Count(center => allDirs.Count(dirs => pattern.All((c, i) => input.At(center + dirs[i]) == c)) == 2);
-        }
-    }
-
-    private static void Solve_3(string input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1() =>
-            new Regex(@"mul\((\d{1,3}),(\d{1,3})\)")
-                .Matches(input)
-                .Sum(m => long.Parse(m.Groups[1].Value) * long.Parse(m.Groups[2].Value));
-
-        long Part2() =>
-            new Regex(@"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)")
-                .Matches(input)
-                .Aggregate(
-                    (res: 0L, enabled: true),
-                    (acc, m) => m.Groups[0].Value switch
-                    {
-                        "do()" => (acc.res, true),
-                        "don't()" => (acc.res, false),
-                        _ => (acc.enabled ? acc.res + long.Parse(m.Groups[1].Value) * long.Parse(m.Groups[2].Value) : acc.res, acc.enabled),
-                    }
-                )
-                .res;
-    }
-
-    private static void Solve_2(long[][] input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        bool IsSafe(long[] levels) =>
-            levels.SlidingWindow(2).All(w => w[1] - w[0] is >= 1 and <= 3) ||
-            levels.SlidingWindow(2).All(w => w[0] - w[1] is >= 1 and <= 3);
-
-        bool IsSafeWithoutOneLevel(long[] levels) =>
-            Enumerable.Range(0, levels.Length).Any(i => IsSafe(levels.ExceptIndex(i).ToArray()));
-
-        long Part1() => input.Count(IsSafe);
-        long Part2() => input.Count(x => IsSafeWithoutOneLevel(x) || IsSafe(x));
-    }
-
-    private static void Solve_1((long, long)[] input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1()
-        {
-            var a = input.Select(x => x.Item1).Order().ToArray();
-            var b = input.Select(x => x.Item2).Order().ToArray();
-            return a.Zip(b, (x, y) => Math.Abs(x - y)).Sum();
-        }
-
-        long Part2()
-        {
-            var counts = input.Select(x => x.Item2).ToLookup(x => x);
-            return input.Sum(x => x.Item1 * counts[x.Item1].Count());
         }
     }
 }

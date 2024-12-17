@@ -10,13 +10,16 @@ namespace aoc.ParseLib;
 
 public static class Parser
 {
-    public static object?[] ParseMethodParameterValues(MethodInfo method, string[] lines)
+    public static object?[] ParseMethodParameterValues(MethodBase method, string[] lines)
     {
+        ICustomAttributeProvider methodAttributesTarget = method is ConstructorInfo constructorInfo
+            ? constructorInfo.DeclaringType!
+            : method;
         var parameters = method.GetParameters();
         if (parameters.Length == 1 
             && parameters[0].ParameterType == typeof(string[]) 
             && !parameters[0].GetCustomAttributes().OfType<StructureAttribute>().Any()
-            && !method.GetCustomAttributes().OfType<StructureAttribute>().Any())
+            && !methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())
             return [lines];
 
         if (method.GetCustomAttributes().OfType<StructureAttribute>().Any())
