@@ -11,6 +11,7 @@ using aoc.aoc2024.day2;
 using aoc.aoc2024.day3;
 using aoc.aoc2024.day4;
 using aoc.aoc2024.day5;
+using aoc.aoc2024.day6;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -21,7 +22,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day5>();
+        Runner.Run<Day6>();
         // Runner.RunFile("day16.txt", Solve_16);
         // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
@@ -32,7 +33,6 @@ public static class Program
         // Runner.RunFile("day9.txt", Solve_9);
         // Runner.RunFile("day8.txt", Solve_8);
         // Runner.RunFile("day7.txt", Solve_7);
-        // Runner.RunFile("day6.txt", Solve_6);
     }
 
     private static void Solve_16(Map<char> map)
@@ -551,38 +551,5 @@ public static class Program
             2 => long.Parse(a.ToString() + b),
             _ => throw new InvalidOperationException(),
         };
-    }
-
-    private static void Solve_6(Map<char> map)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1() =>
-            Start()
-                .Walk(map, w => Next(w))
-                .Select(x => x.Pos)
-                .Distinct()
-                .Count();
-
-        long Part2() =>
-            Start()
-                .Walk(map, w => Next(w))
-                .Select(x => x.Pos)
-                .Distinct()
-                .Count(
-                    obstacle => Start()
-                        .WalkWithCycleCheck(map, w => Next(w, obstacle))
-                        .Last() is null
-                );
-
-
-        Walker Start() => new(map.All().Single(v => map[v] == '^'), Dir.Up);
-
-        Walker? Next(Walker w, V? obstacle = null) =>
-            !w.Forward().Inside(map) ? null
-            : w.Forward().Pos == obstacle || map[w.Forward().Pos] == '#' ? w.TurnCW()
-            : w.Forward();
     }
 }
