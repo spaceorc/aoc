@@ -81,7 +81,7 @@ public static class Runner
     
     private static void Invoke(ConstructorInfo constructorInfo, object?[] args)
     {
-        var solveMethod = constructorInfo.DeclaringType!.GetMethod("Solve")!;
+        var solveMethod = constructorInfo.DeclaringType!.GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "Solve");
         var parameters = constructorInfo.GetParameters();
         var dynamicMethod = new DynamicMethod(
             Guid.NewGuid().ToString(),

@@ -10,6 +10,7 @@ using aoc.aoc2024.day17;
 using aoc.aoc2024.day2;
 using aoc.aoc2024.day3;
 using aoc.aoc2024.day4;
+using aoc.aoc2024.day5;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -20,7 +21,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day4>();
+        Runner.Run<Day5>();
         // Runner.RunFile("day16.txt", Solve_16);
         // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
@@ -32,7 +33,6 @@ public static class Program
         // Runner.RunFile("day8.txt", Solve_8);
         // Runner.RunFile("day7.txt", Solve_7);
         // Runner.RunFile("day6.txt", Solve_6);
-        // Runner.RunFile("day5.txt", Solve_5);
     }
 
     private static void Solve_16(Map<char> map)
@@ -584,44 +584,5 @@ public static class Program
             !w.Forward().Inside(map) ? null
             : w.Forward().Pos == obstacle || map[w.Forward().Pos] == '#' ? w.TurnCW()
             : w.Forward();
-    }
-
-    private static void Solve_5((long before, long after)[] rules, long[][] updates)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1()
-        {
-            return updates
-                .Where(Check)
-                .Sum(u => u[u.Length / 2]);
-        }
-
-        long Part2()
-        {
-            return updates
-                .Where(u => !Check(u))
-                .Select(Correct)
-                .Sum(u => u[u.Length / 2]);
-        }
-
-        bool Check(long[] update)
-        {
-            var posByPage = update.WithIndex().ToDictionary(e => e.item, e => e.index);
-            return rules
-                .Where(r => posByPage.ContainsKey(r.before) && posByPage.ContainsKey(r.after))
-                .All(r => posByPage[r.before] < posByPage[r.after]);
-        }
-
-        long[] Correct(long[] update)
-        {
-            var deps = rules
-                .Where(r => update.Contains(r.before) && update.Contains(r.after))
-                .ToLookup(r => r.after, r => r.before);
-
-            return update.TopSort(e => deps[e]).ToArray();
-        }
     }
 }
