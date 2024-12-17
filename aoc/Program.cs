@@ -12,6 +12,7 @@ using aoc.aoc2024.day3;
 using aoc.aoc2024.day4;
 using aoc.aoc2024.day5;
 using aoc.aoc2024.day6;
+using aoc.aoc2024.day7;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -22,7 +23,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day6>();
+        Runner.Run<Day7>();
         // Runner.RunFile("day16.txt", Solve_16);
         // Runner.RunFile("day15.txt", Solve_15);
         // Runner.RunFile("day14.txt", Solve_14);
@@ -32,7 +33,6 @@ public static class Program
         // Runner.RunFile("day10.txt", Solve_10);
         // Runner.RunFile("day9.txt", Solve_9);
         // Runner.RunFile("day8.txt", Solve_8);
-        // Runner.RunFile("day7.txt", Solve_7);
     }
 
     private static void Solve_16(Map<char> map)
@@ -522,34 +522,5 @@ public static class Program
             )
             .Distinct()
             .Count();
-    }
-
-    private static void Solve_7((long res, long[] args)[] input)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1() => input.Where(x => Check(x.res, x.args, 2)).Sum(x => x.res);
-        long Part2() => input.Where(x => Check(x.res, x.args, 3)).Sum(x => x.res);
-
-        bool Check(long res, long[] args, int opsCount) =>
-            Combinatorics
-                .Variants(args.Length - 1, opsCount)
-                .Select(ops => Calc(args, ops))
-                .Any(calculated => calculated == res);
-
-        long Calc(long[] args, int[] ops) =>
-            args[1..]
-                .Zip(ops, (arg, op) => (arg, op))
-                .Aggregate(args[0], (acc, x) => Op(acc, x.arg, x.op));
-
-        long Op(long a, long b, int op) => op switch
-        {
-            0 => a + b,
-            1 => a * b,
-            2 => long.Parse(a.ToString() + b),
-            _ => throw new InvalidOperationException(),
-        };
     }
 }
