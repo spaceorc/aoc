@@ -5,6 +5,20 @@ namespace aoc.Lib;
 
 public static class Search
 {
+    public static int BinarySearchLowerBound(int left, int right, Func<int, bool> isGreaterThanOrEqualTo)
+    {
+        while (left < right)
+        {
+            var mid = left + (right - left) / 2;
+            if (isGreaterThanOrEqualTo(mid))
+                right = mid;
+            else
+                left = mid + 1;
+        }
+
+        return left;
+    }
+    
     public static IEnumerable<SearchPathItem<TState>> Bfs<TState>(
         IEnumerable<TState> startFrom,
         Func<TState, IEnumerable<TState>> getNextStates,
@@ -35,7 +49,7 @@ public static class Search
                 if (used.TryGetValue(next, out var prev))
                 {
                     if (prev.Distance <= curItem.Distance + 1)
-                        prev.Prevs.Add(curItem);
+                        prev.Predecessors.Add(curItem);
                     continue;
                 }
 
@@ -76,7 +90,7 @@ public static class Search
                 {
                     if (prevItem.Distance == curItem.Distance + distance)
                     {
-                        prevItem.Prevs.Add(curItem);
+                        prevItem.Predecessors.Add(curItem);
                         continue;
                     }
                     if (prevItem.Distance < curItem.Distance + distance)

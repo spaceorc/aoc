@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using aoc.aoc2024.day1;
 using aoc.aoc2024.day10;
 using aoc.aoc2024.day17;
+using aoc.aoc2024.day18;
 using aoc.aoc2024.day2;
 using aoc.aoc2024.day3;
 using aoc.aoc2024.day4;
@@ -27,6 +28,7 @@ public static class Program
     private static void Main()
     {
         Runner.Run<Day10>();
+        Runner.Run<Day18>();
         // Runner.Run("day16.txt", Solve_16);
         // Runner.Run("day15.txt", Solve_15);
         // Runner.Run("day14.txt", Solve_14);
@@ -67,7 +69,7 @@ public static class Program
 
             return search
                 .Where(x => x.State.Pos == end && x.Distance == distance)
-                .SelectMany(x => x.AllPrevsBack())
+                .SelectMany(x => x.AllPredecessors)
                 .Select(x => x.Pos)
                 .Distinct()
                 .Count();
