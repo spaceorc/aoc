@@ -8,7 +8,7 @@ namespace aoc.aoc2024.day18;
 
 public class Day18(V[] input)
 {
-    private readonly Square square = new Square(V.Zero, new V(70, 70));
+    private readonly Square square = new(V.Zero, new V(70, 70));
 
     public void Solve()
     {

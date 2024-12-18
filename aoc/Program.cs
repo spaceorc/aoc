@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using aoc.aoc2024.day1;
 using aoc.aoc2024.day10;
+using aoc.aoc2024.day11;
 using aoc.aoc2024.day17;
 using aoc.aoc2024.day18;
 using aoc.aoc2024.day2;
@@ -27,14 +28,12 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day10>();
-        Runner.Run<Day18>();
+        Runner.Run<Day11>();
         // Runner.Run("day16.txt", Solve_16);
         // Runner.Run("day15.txt", Solve_15);
         // Runner.Run("day14.txt", Solve_14);
         // Runner.Run("day13.txt", Solve_13);
         // Runner.Run("day12.txt", Solve_12);
-        // Runner.Run("day11.txt", Solve_11);
     }
 
     private static void Solve_16(Map<char> map)
@@ -345,36 +344,6 @@ public static class Program
             }
 
             return rings;
-        }
-    }
-
-    private static void Solve_11([NonArray] long[] input)
-    {
-        Solve(25).Out("Part 1: ");
-        Solve(75).Out("Part 2: ");
-        return;
-
-        long Solve(int n)
-        {
-            var results = new Dictionary<(long, int), long>();
-            return input.Sum(x => Count(x, n, results));
-        }
-
-        long Count(long x, int n, Dictionary<(long, int), long> results)
-        {
-            if (n == 0)
-                return 1;
-
-            if (results.TryGetValue((x, n), out var result))
-                return result;
-
-            result = x == 0
-                ? Count(1, n - 1, results)
-                : x.ToString() is { } s && s.Length % 2 == 0
-                    ? Count(long.Parse(s[..(s.Length / 2)]), n - 1, results) + Count(long.Parse(s[(s.Length / 2)..]), n - 1, results)
-                    : Count(x * 2024, n - 1, results);
-            results[(x, n)] = result;
-            return result;
         }
     }
 }
