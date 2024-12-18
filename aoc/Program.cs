@@ -1,23 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using aoc.aoc2024.day1;
-using aoc.aoc2024.day10;
-using aoc.aoc2024.day11;
-using aoc.aoc2024.day17;
-using aoc.aoc2024.day18;
-using aoc.aoc2024.day2;
-using aoc.aoc2024.day3;
-using aoc.aoc2024.day4;
-using aoc.aoc2024.day5;
-using aoc.aoc2024.day6;
-using aoc.aoc2024.day7;
-using aoc.aoc2024.day8;
-using aoc.aoc2024.day9;
+using aoc.aoc2024.day12;
 using aoc.Lib;
 using aoc.ParseLib;
 using aoc.ParseLib.Attributes;
@@ -28,12 +11,11 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day11>();
+        Runner.Run<Day12>();
         // Runner.Run("day16.txt", Solve_16);
         // Runner.Run("day15.txt", Solve_15);
         // Runner.Run("day14.txt", Solve_14);
         // Runner.Run("day13.txt", Solve_13);
-        // Runner.Run("day12.txt", Solve_12);
     }
 
     private static void Solve_16(Map<char> map)
@@ -258,92 +240,6 @@ public static class Program
                 return 0;
 
             return 3 * na.ToLong() + nb.ToLong();
-        }
-    }
-
-    private static void Solve_12(Map<char> map)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        long Part1() => Zones().Sum(z => Perimeter(z) * z.Count);
-        long Part2() => Zones().Sum(z => CornersCount(z) * z.Count);
-
-        long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
-        long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
-
-        long RingCornersCount(List<V> ring) => ring.Count(
-            (v, i) => V.XProd(
-                          ring[(i + 1) % ring.Count] - v,
-                          ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
-                      ) !=
-                      0
-        );
-
-        List<HashSet<V>> Zones()
-        {
-            var used = new HashSet<V>();
-            var list = new List<HashSet<V>>();
-            foreach (var start in map.All())
-            {
-                if (used.Contains(start))
-                    continue;
-                var zone = Search.Bfs(
-                        [start],
-                        v => v.Area4().Where(n => map.Inside(n) && map[n] == map[start])
-                    )
-                    .Select(x => x.State)
-                    .ToHashSet();
-                used.UnionWith(zone);
-                list.Add(zone);
-            }
-
-            return list;
-        }
-
-        List<List<V>> WalkAround(HashSet<V> zone)
-        {
-            var boundaries = zone.SelectMany(
-                    v => new[]
-                    {
-                        (start: v, end: v + V.right),
-                        (start: v + V.right, end: v + V.right + V.down),
-                        (start: v + V.right + V.down, end: v + V.down),
-                        (start: v + V.down, end: v),
-                    }
-                )
-                .ToHashSet();
-            var boundariesToRemove = boundaries.Where(b => boundaries.Contains((b.end, b.start))).ToArray();
-            foreach (var boundary in boundariesToRemove)
-                boundaries.Remove(boundary);
-
-            var startToEnd = boundaries.ToLookup(b => b.start, b => b.end);
-
-            var rings = new List<List<V>>();
-            var used = new HashSet<(V start, V end)>();
-
-            foreach (var startGroup in startToEnd)
-            {
-                if (startGroup.All(n => used.Contains((startGroup.Key, n))))
-                    continue;
-
-                var ring = new List<V>();
-                var cur = startGroup.Key;
-                while (true)
-                {
-                    ring.Add(cur);
-                    var next = startToEnd[cur].First(n => !used.Contains((cur, n)));
-                    used.Add((cur, next));
-                    cur = next;
-                    if (cur == ring[0])
-                        break;
-                }
-
-                rings.Add(ring);
-            }
-
-            return rings;
         }
     }
 }
