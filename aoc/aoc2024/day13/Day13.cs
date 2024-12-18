@@ -22,32 +22,31 @@ public class Day13(
     {
         Part1().Out("Part 1: ");
         Part2().Out("Part 2: ");
-        return;
+    }
 
-        long Part1() => input.Sum(x => Solve(x.a, x.b, x.target));
-        long Part2() => input.Sum(x => Solve(x.a, x.b, x.target + new V(10000000000000, 10000000000000)));
+    private long Part1() => input.Sum(x => Solve(x.a, x.b, x.target));
+    private long Part2() => input.Sum(x => Solve(x.a, x.b, x.target + new V(10000000000000, 10000000000000)));
 
-        long Solve(V a, V b, V target)
-        {
-            var m = Matrix.Rows(
-                [a.X, b.X],
-                [a.Y, b.Y]
-            );
-            var t = Matrix.Col(
-                target.X,
-                target.Y
-            );
-            if (m.Invert() is not { } mInv)
-                return 0;
+    private static long Solve(V a, V b, V target)
+    {
+        var m = Matrix.Rows(
+            [a.X, b.X],
+            [a.Y, b.Y]
+        );
+        var t = Matrix.Col(
+            target.X,
+            target.Y
+        );
+        if (m.Invert() is not { } mInv)
+            return 0;
 
-            var n = mInv * t;
-            var na = n[0, 0];
-            var nb = n[1, 0];
+        var n = mInv * t;
+        var na = n[0, 0];
+        var nb = n[1, 0];
 
-            if (!na.IsInt() || !nb.IsInt() || na < 0 || nb < 0)
-                return 0;
+        if (!na.IsInt() || !nb.IsInt() || na < 0 || nb < 0)
+            return 0;
 
-            return 3 * na.ToLong() + nb.ToLong();
-        }
+        return 3 * na.ToLong() + nb.ToLong();
     }
 }
