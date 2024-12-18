@@ -165,10 +165,13 @@
         <None Update="aoc2024\day13\input.txt">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Update="aoc2024\day14\input.txt">
+        <None Update="aoc2024\day14\sample.txt">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="aoc2024\day15\input.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="aoc2024\day15\sample.txt">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
