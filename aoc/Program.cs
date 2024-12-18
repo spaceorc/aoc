@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using aoc.aoc2024.day1;
+using aoc.aoc2024.day10;
 using aoc.aoc2024.day17;
 using aoc.aoc2024.day2;
 using aoc.aoc2024.day3;
@@ -25,14 +26,13 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day9>();
+        Runner.Run<Day10>();
         // Runner.Run("day16.txt", Solve_16);
         // Runner.Run("day15.txt", Solve_15);
         // Runner.Run("day14.txt", Solve_14);
         // Runner.Run("day13.txt", Solve_13);
         // Runner.Run("day12.txt", Solve_12);
         // Runner.Run("day11.txt", Solve_11);
-        // Runner.Run("day10.txt", Solve_10);
     }
 
     private static void Solve_16(Map<char> map)
@@ -373,49 +373,6 @@ public static class Program
                     : Count(x * 2024, n - 1, results);
             results[(x, n)] = result;
             return result;
-        }
-    }
-
-    private static void Solve_10(Map<char> map)
-    {
-        Part1().Out("Part 1: ");
-        Part2().Out("Part 2: ");
-        return;
-
-        IEnumerable<V> Heads() => map.All().Where(v => map[v] == '0');
-        IEnumerable<V> Slopes() => map.All().Where(v => map[v] == '9');
-        IEnumerable<V> Next(V v) => v.Area4().Where(n => map.Inside(n) && map[n] == map[v] + 1);
-
-        long Part1() => Heads()
-            .Select(ScoreMap)
-            .Select(score => Slopes().Count(s => score[s] != 0))
-            .Sum();
-
-        long Part2() => Heads()
-            .Select(ScoreMap)
-            .Select(score => Slopes().Sum(s => score[s]))
-            .Sum();
-
-        Map<int> ScoreMap(V head)
-        {
-            var queue = new Queue<V>();
-            queue.Enqueue(head);
-            var score = new Map<int>(map.sizeX, map.sizeY)
-            {
-                [head] = 1,
-            };
-            while (queue.Count > 0)
-            {
-                var cur = queue.Dequeue();
-                foreach (var next in Next(cur))
-                {
-                    if (score[next] == 0)
-                        queue.Enqueue(next);
-                    score[next] += score[cur];
-                }
-            }
-
-            return score;
         }
     }
 }
