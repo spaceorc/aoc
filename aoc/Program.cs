@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using aoc.aoc2024.day15;
+using aoc.aoc2024.day19;
 using aoc.Lib;
 using aoc.ParseLib;
 
@@ -10,7 +11,7 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day15>();
+        Runner.Run<Day19>();
         // Runner.Run("day16.txt", Solve_16);
     }
 
