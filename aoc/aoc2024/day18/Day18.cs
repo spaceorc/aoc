@@ -17,7 +17,7 @@ public class Day18(V[] input)
 
     private string Part2()
     {
-        var take = Search.BinarySearchLowerBound(
+        var take = Alg.BinarySearchLowerBound(
             left: 1024,
             right: input.Length,
             isGreaterThanOrEqualTo: take => GetPathLength(take) < 0
