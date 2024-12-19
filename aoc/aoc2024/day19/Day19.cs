@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using aoc.Lib;
+using aoc.ParseLib.Attributes;
 
 namespace aoc.aoc2024.day19;
 
-public class Day19(string patterns, string[] designs)
+public class Day19([NonArray] string[] patterns, string[] designs)
 {
-    private readonly string[] patterns = patterns.Split(", ");
-
     public void Solve()
     {
         Part1().Out("Part 1: ");

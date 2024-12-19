@@ -22,7 +22,7 @@ public static class Parser
             && !methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())
             return [lines];
 
-        if (method.GetCustomAttributes().OfType<StructureAttribute>().Any())
+        if (methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())
         {
             var methodStructure = MethodStructure.CreateStructure(method);
             return methodStructure.CreateParameters(string.Join('\n', lines));
@@ -59,7 +59,7 @@ public static class Parser
 
             var region = regions[i];
             args.Add(
-                parameter.ParameterType == typeof(string[])
+                parameter.ParameterType == typeof(string[]) && parameter.GetCustomAttribute<NonArrayAttribute>() == null
                     ? region
                     : ParseParameterValue(parameter, parameter.ParameterType, region)
             );
