@@ -33,13 +33,13 @@ public static class Alg
         }
     }
     
-    public static IEnumerable<TResult> IncrementalDynProg<TArg, TResult>(this IEnumerable<TArg> source, Func<TArg, Func<TArg, TResult>, TResult> calc) where TArg : notnull
+    public static IEnumerable<(TArg Arg, TResult Result)> IncrementalDynProg<TArg, TResult>(this IEnumerable<TArg> source, Func<TArg, Func<TArg, TResult>, TResult> calc) where TArg : notnull
     {
         var cache = new Dictionary<TArg, TResult>();
         foreach (var arg in source)
         {
             cache[arg] = calc(arg, a => cache[a]);
-            yield return cache[arg];
+            yield return (arg, cache[arg]);
         }
     }
 }

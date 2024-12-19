@@ -38,7 +38,7 @@ public class Day19([NonArray] string[] patterns, string[] designs)
     }
 
     private long GetWaysCountAlt1(string design) =>
-        Enumerable.Range(0, design.Length + 1)
+        Enumerable.Range(0, int.MaxValue)
             .IncrementalDynProg<int, long>(
                 (prefix, getResult) => prefix == 0
                     ? 1L
@@ -46,7 +46,8 @@ public class Day19([NonArray] string[] patterns, string[] designs)
                         .Where(pattern => design.AsSpan(0, prefix).EndsWith(pattern))
                         .Sum(pattern => getResult(prefix - pattern.Length))
             )
-            .Last();
+            .First(x => x.Arg == design.Length)
+            .Result;
 
     private long GetWaysCountAlt2(string design) =>
         Alg.RecursiveDynProg<int, long>(
