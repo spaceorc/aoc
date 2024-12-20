@@ -57,6 +57,48 @@ public record V(long X, long Y)
     public IEnumerable<V> Area4() => area4.Select(x => this + x);
     public IEnumerable<V> Area5() => area5.Select(x => this + x);
     public IEnumerable<V> Area8() => area8.Select(x => this + x);
+    
+    public IEnumerable<V> CCircle(long r)
+    {
+        for (var y = -r; y <= r; y++)
+        for (var x = -r; x <= r; x++)
+            yield return this + new V(x, y);
+    }
+    
+    public IEnumerable<V> MCircle(long r)
+    {
+        for (var y = -r; y <= r; y++)
+        {
+            var dx = r - Math.Abs(y);
+            for (var x = -dx; x <= dx; x++)
+                yield return this + new V(x, y);
+        }
+    }
+    
+    public IEnumerable<V> CCircumference(long r)
+    {
+        for (var x = -r; x <= r; x++)
+        {
+            yield return this + new V(x, -r);
+            yield return this + new V(x, r);
+        }
+        for (var y = -r + 1; y <= r - 1; y++)
+        {
+            yield return this + new V(-r, y);
+            yield return this + new V(r, y);
+        }
+    }
+    
+    public IEnumerable<V> MCircumference(long r)
+    {
+        for (var y = -r; y <= r; y++)
+        {
+            var dx = r - Math.Abs(y);
+            yield return this + new V(-dx, y);
+            if (dx != 0)
+                yield return this + new V(dx, y);
+        }
+    }
 
     public bool InSquare(Square r) => X >= r.MinX && X <= r.MaxX && Y >= r.MinY && Y <= r.MaxY;
 
