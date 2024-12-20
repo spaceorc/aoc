@@ -69,6 +69,11 @@ public class Map<T>
             yield return new V(x, y);
     }
 
+    public IEnumerable<V> All(T value)
+    {
+       return All().Where(v => EqualityComparer<T>.Default.Equals(this[v], value));
+    }
+
     public IEnumerable<V> AllButBorder()
     {
         for (var y = 1; y < sizeY - 1; y++)
