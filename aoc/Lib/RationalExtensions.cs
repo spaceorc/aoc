@@ -10,7 +10,7 @@ public static class RationalExtensions
     {
         return source.Aggregate(Rational.Zero, (current, value) => current + value);
     }
-        
+
     public static Rational Max(this IEnumerable<Rational> source)
     {
         return source.Aggregate(Rational.Max);

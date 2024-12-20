@@ -27,7 +27,6 @@ public static class Rotations3
             { 1, 0, 0 },
             { 0, 1, 0 },
         },
-
     ];
 
     private static readonly List<long[,]> B =
@@ -59,7 +58,6 @@ public static class Rotations3
             { 0, -1, 0 },
             { 0, 0, -1 },
         },
-
     ];
 
     private static readonly List<long[,]> C =
@@ -77,7 +75,6 @@ public static class Rotations3
             { 0, -1, 0 },
             { -1, 0, 0 },
         },
-
     ];
 
     private static readonly List<long[,]> ROTATIONS = GenRotations();

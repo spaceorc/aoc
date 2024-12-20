@@ -14,7 +14,7 @@ public class Treap_Tests
         treap.Count.Should().Be(1);
         treap.ToArray().Should().Equal(1);
     }
-    
+
     [Test]
     public void Test()
     {

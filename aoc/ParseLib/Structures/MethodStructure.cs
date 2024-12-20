@@ -26,7 +26,7 @@ public record MethodStructure(MethodBase Method, TypeStructure Parameters)
         context.Validate();
         return new MethodStructure(methodInfo, parametersStructure);
     }
-    
+
     public object?[] CreateParameters(string source)
     {
         var result = Parameters.CreateObject(source);

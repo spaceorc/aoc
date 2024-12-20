@@ -31,7 +31,7 @@ public record TypeStructureParserContext(
     public static TypeStructureParserContext CreateRoot() => new(
         Target: "",
         Attributes: [],
-        ParentAttributes: [], 
+        ParentAttributes: [],
         AllAttributes: new Dictionary<StructureAttribute, string>(),
         UsedAttributes: new Dictionary<StructureAttribute, string>()
     );

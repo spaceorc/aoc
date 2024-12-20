@@ -51,16 +51,16 @@ public static class Program2023
         {
             var stats = new Dictionary<(string, string), long>().ToDefault();
             var nodes = input.SelectMany(line => line.links.Append(line.name)).Distinct().ToArray();
-            var edges = input.SelectMany(line => line.links.SelectMany(link => new [] {(line.name, link), (link, line.name)}))
+            var edges = input.SelectMany(line => line.links.SelectMany(link => new[] { (line.name, link), (link, line.name) }))
                 .GroupBy(x => x.Item1, x => x.Item2)
                 .ToDictionary(x => x.Key, x => x.ToArray());
-            
-            for (int i = 0; i < 10000; i++)
+
+            for (var i = 0; i < 10000; i++)
             {
                 var n1 = nodes[Random.Shared.Next(nodes.Length)];
                 var n2 = nodes[Random.Shared.Next(nodes.Length)];
                 var first = Search.Bfs([n1], cur => edges[cur]).First(x => x.State == n2);
-                
+
                 foreach (var pair in first.PathBack().SlidingWindow(2))
                 {
                     if (pair[0].CompareTo(pair[1]) < 0)
@@ -72,14 +72,14 @@ public static class Program2023
 
             foreach (var ((a, b), count) in stats.OrderByDescending(x => x.Value).Take(10))
                 Console.WriteLine($"{a} <--> {b}: {count}");
-            
+
             var cut = stats.OrderByDescending(x => x.Value).Select(x => x.Key).Take(3).ToArray();
             foreach (var (a, b) in cut)
             {
                 edges[a] = edges[a].Without(b).ToArray();
                 edges[b] = edges[b].Without(a).ToArray();
             }
-            
+
             var c1 = Search.Bfs([cut[0].Item1], cur => edges[cur]).LongCount();
             var c2 = Search.Bfs([cut[0].Item2], cur => edges[cur]).LongCount();
             return c1 * c2;
@@ -225,9 +225,7 @@ public static class Program2023
                                          )
                              )
                              .Where(s => s.State != cross && crosses.Contains(s.State)))
-                {
                     edges[crossIndexes[cross]].Add(crossIndexes[pathItem.State], pathItem.Distance);
-                }
             }
 
             return (crossIndexes[start], crossIndexes[end], edges);
@@ -484,7 +482,7 @@ public static class Program2023
             for (var i = 0; i < int.MaxValue; i++)
             {
                 Push();
-                for (int g = 0; g < generators.Length; g++)
+                for (var g = 0; g < generators.Length; g++)
                 {
                     if (generatorPeriods[g] == 0 && pulseCounts[(generators[g], true)] > 0)
                         generatorPeriods[g] = i + 1;
@@ -544,12 +542,7 @@ public static class Program2023
     }
 
     private static void Solve_19_IL_Part1(
-        [
-            Template("{name}{{{branches},{otherwise}}}"),
-            Split(",", Target = "branches"),
-            Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")
-        ]
-        (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
+        [Template("{name}{{{branches},{otherwise}}}")] [Split(",", Target = "branches")] [Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")] (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
         [Split("{}=xmas,")]
         long[][] parts
     )
@@ -587,12 +580,7 @@ public static class Program2023
     }
 
     private static void Solve_19(
-        [
-            Template("{name}{{{branches},{otherwise}}}"),
-            Split(",", Target = "branches"),
-            Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")
-        ]
-        (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
+        [Template("{name}{{{branches},{otherwise}}}")] [Split(",", Target = "branches")] [Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")] (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
         [Split("{}=xmas,")]
         long[][] parts
     )
@@ -625,11 +613,11 @@ public static class Program2023
                         part,
                         branches[rule]
                             .First(
-                                b => b.op == '<' && part[b.field] < b.value ||
-                                     b.op == '>' && part[b.field] > b.value
+                                b => (b.op == '<' && part[b.field] < b.value) ||
+                                     (b.op == '>' && part[b.field] > b.value)
                             )
                             .next
-                    )
+                    ),
                 };
         }
 
@@ -662,7 +650,7 @@ public static class Program2023
                             }
                         )
                         .First(t => t.stop)
-                        .result
+                        .result,
                 };
             }
         }
@@ -687,7 +675,7 @@ public static class Program2023
                                 'D' => V.down,
                                 'L' => V.left,
                                 'U' => V.up,
-                                _ => throw new Exception()
+                                _ => throw new Exception(),
                             }
                         )
                     )
@@ -708,7 +696,7 @@ public static class Program2023
                                 '1' => V.down,
                                 '2' => V.left,
                                 '3' => V.up,
-                                _ => throw new Exception()
+                                _ => throw new Exception(),
                             }
                         )
                     )
@@ -801,7 +789,7 @@ public static class Program2023
                             ('-', Dir.Left or Dir.Right) => [cur],
                             ('|', Dir.Up or Dir.Down) => [cur],
                             ('-' or '|', _) => [cur.TurnCCW(), cur.TurnCW()],
-                            _ => throw new Exception($"Invalid state: {cur}")
+                            _ => throw new Exception($"Invalid state: {cur}"),
                         })
                         .Select(next => next.Forward())
                         .Where(next => next.Inside(map))

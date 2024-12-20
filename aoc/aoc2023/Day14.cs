@@ -31,7 +31,7 @@ public static class Day14
 
     public static string[] RotateCCW(string[] input, long count)
     {
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             input = RotateCCW(input);
 
         return input;
@@ -44,7 +44,7 @@ public static class Day14
 
     public static string[] RotateCW(string[] input, long count)
     {
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             input = RotateCW(input);
 
         return input;
@@ -91,7 +91,7 @@ public static class Day14
     public static long CalcLoad(string[] input)
     {
         var result = 0L;
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
             result += input[i].Count(c => c == 'O') * (input.Length - i);
         return result;
     }
@@ -120,7 +120,7 @@ public static class Day14
 
         var iterationByHash = new Dictionary<int, int>();
         var resultByIteration = new Dictionary<long, long>();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             // if (i % 1000 == 0)
             //     Console.WriteLine($"i = {i}");

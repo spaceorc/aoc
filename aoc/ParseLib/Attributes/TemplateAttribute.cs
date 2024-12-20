@@ -73,7 +73,7 @@ public class TemplateAttribute(string template) : StructureAttribute
                                           var spec = m.Value.Substring(1, m.Value.Length - 2);
                                           if (spec.EndsWith(":char"))
                                               return $"(?<{spec[..^5]}>.)";
-                                          
+
                                           return $"(?<{spec}>.*)";
                                       }
                                   ) +

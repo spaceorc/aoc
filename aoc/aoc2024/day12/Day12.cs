@@ -16,13 +16,15 @@ public class Day12(Map<char> map)
     private long Part2() => Zones().Sum(z => CornersCount(z) * z.Count);
 
     private static long Perimeter(HashSet<V> zone) => zone.SelectMany(v => v.Area4()).Count(v => !zone.Contains(v));
-    
+
     private static long CornersCount(HashSet<V> zone) => WalkAround(zone).Sum(RingCornersCount);
 
     private static long RingCornersCount(List<V> ring) => ring.Count(
         (_, i) => V.XProd(
-            ring[(i + 1) % ring.Count] - ring[(i + 0) % ring.Count],
-            ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]) != 0
+                      ring[(i + 1) % ring.Count] - ring[(i + 0) % ring.Count],
+                      ring[(i + 2) % ring.Count] - ring[(i + 1) % ring.Count]
+                  ) !=
+                  0
     );
 
     private List<HashSet<V>> Zones()

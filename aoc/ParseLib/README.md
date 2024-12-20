@@ -7,28 +7,28 @@
 
 ### Parsing capabilities
 
-   * Fallback for simple `string[]` - plain content from source
-   * Parse many ranges from source (separated by `\n\n`):
-     * Each range goes to corresponding parameter of method
-     * Support `params` keyword to parse dynamic number of ranges
-   * Parse parameters:
-     * Atoms:
-       * Primitive types: `int`, `long`, `string`, `char`, classes with static `Parse(string)` method
-       * Arrays of any supported type
-       * ValueTuple or Tuple
-       * Any class or record with single constructor with parameters
-       * Specify separators for atoms parsing (defaults to `" ;,:|=()\n"`)
-     * Parse by template or regex:
-       * ValueTuple or Tuple
-       * Any class or record with single constructor with parameters
-     * Parse by simple splitting:
+* Fallback for simple `string[]` - plain content from source
+* Parse many ranges from source (separated by `\n\n`):
+    * Each range goes to corresponding parameter of method
+    * Support `params` keyword to parse dynamic number of ranges
+* Parse parameters:
+    * Atoms:
+        * Primitive types: `int`, `long`, `string`, `char`, classes with static `Parse(string)` method
+        * Arrays of any supported type
+        * ValueTuple or Tuple
+        * Any class or record with single constructor with parameters
+        * Specify separators for atoms parsing (defaults to `" ;,:|=()\n"`)
+    * Parse by template or regex:
+        * ValueTuple or Tuple
+        * Any class or record with single constructor with parameters
+    * Parse by simple splitting:
         * ValueTuple or Tuple
         * Any class or record with single constructor with parameters
         * Array of any supported type
         * Specify separators for simple parsing (defaults to `" ;,:|=()\n"`)
-     * Populate array by all captures from regex
-   * Templates, regexes and atoms can be specified also on method level,
-     not only on parameters level   
+    * Populate array by all captures from regex
+* Templates, regexes and atoms can be specified also on method level,
+  not only on parameters level
 
 ## Basic usage
 

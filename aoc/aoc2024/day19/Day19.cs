@@ -22,11 +22,11 @@ public class Day19([NonArray] string[] patterns, string[] designs)
     private long Part2Alt1() => designs.Sum(GetWaysCountAlt1);
     private long Part2Alt2() => designs.Sum(GetWaysCountAlt2);
     private long Part2Alt3() => designs.Sum(GetWaysCountAlt3);
-    
+
     private long GetWaysCount(string design)
     {
         return Get(0, new Dictionary<int, long>());
-        
+
         long Get(int startFrom, Dictionary<int, long> results) =>
             startFrom == design.Length
                 ? 1

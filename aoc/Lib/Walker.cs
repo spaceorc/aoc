@@ -32,6 +32,7 @@ public record Walker(V Pos, Dir Dir)
                 yield return null;
                 break;
             }
+
             yield return w;
         }
     }

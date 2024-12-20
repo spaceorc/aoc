@@ -28,7 +28,7 @@ public class Day18(V[] input)
 
     private long GetPathLength(int take)
     {
-        var positions = input.Take(take).ToHashSet(); 
+        var positions = input.Take(take).ToHashSet();
         return Search
                    .Bfs(
                        [V.Zero],

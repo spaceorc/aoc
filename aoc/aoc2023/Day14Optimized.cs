@@ -11,10 +11,10 @@ public static unsafe class Day14Optimized
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
 
-        for (int x = 0; x < sizeX; x++)
+        for (var x = 0; x < sizeX; x++)
         {
             var start = 0;
-            for (int y = 0; y < sizeY; y++)
+            for (var y = 0; y < sizeY; y++)
             {
                 if (map[x, y] == '#')
                     start = y + 1;
@@ -32,10 +32,10 @@ public static unsafe class Day14Optimized
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
 
-        for (int y = 0; y < sizeY; y++)
+        for (var y = 0; y < sizeY; y++)
         {
             var start = 0;
-            for (int x = 0; x < sizeX; x++)
+            for (var x = 0; x < sizeX; x++)
             {
                 if (map[x, y] == '#')
                     start = x + 1;
@@ -52,11 +52,11 @@ public static unsafe class Day14Optimized
     {
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
-        
-        for (int y = 0; y < sizeY; y++)
+
+        for (var y = 0; y < sizeY; y++)
         {
             var start = sizeX - 1;
-            for (int x = sizeX - 1; x >= 0; x--)
+            for (var x = sizeX - 1; x >= 0; x--)
             {
                 if (map[x, y] == '#')
                     start = x - 1;
@@ -73,11 +73,11 @@ public static unsafe class Day14Optimized
     {
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
-        
-        for (int x = 0; x < sizeX; x++)
+
+        for (var x = 0; x < sizeX; x++)
         {
             var start = sizeY - 1;
-            for (int y = sizeY - 1; y >= 0; y--)
+            for (var y = sizeY - 1; y >= 0; y--)
             {
                 if (map[x, y] == '#')
                     start = y - 1;
@@ -102,8 +102,8 @@ public static unsafe class Day14Optimized
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
 
-        for (int x = 0; x < sizeX; x++)
-        for (int y = 0; y < sizeY; y++)
+        for (var x = 0; x < sizeX; x++)
+        for (var y = 0; y < sizeY; y++)
         {
             if (map[x, y] == 'O')
                 result += sizeY - y;
@@ -116,7 +116,7 @@ public static unsafe class Day14Optimized
     {
         var input = ToLines(map);
         var result = 0L;
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
             result += input[i].Count(c => c == 'O') * (input.Length - i);
         return result;
     }
@@ -138,7 +138,7 @@ public static unsafe class Day14Optimized
             for (var i = 0; i < count; ++i, ++mapPtr)
                 result = HashCode.Combine(result, *mapPtr);
             var mapRestPtr = (char*)mapPtr;
-            for (int i = 0; i < rest; ++i, ++mapRestPtr)
+            for (var i = 0; i < rest; ++i, ++mapRestPtr)
                 result = HashCode.Combine(result, (*mapRestPtr).GetHashCode());
         }
 
@@ -152,8 +152,8 @@ public static unsafe class Day14Optimized
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
 
-        for (int x = 0; x < sizeX; x++)
-        for (int y = 0; y < sizeY; y++)
+        for (var x = 0; x < sizeX; x++)
+        for (var y = 0; y < sizeY; y++)
             result = HashCode.Combine(result, map[x, y].GetHashCode());
 
         return result;
@@ -175,7 +175,7 @@ public static unsafe class Day14Optimized
     public static string[] ToLines(char[,] map)
     {
         var result = new List<string>();
-        for (int y = 0; y < map.GetLength(1); y++)
+        for (var y = 0; y < map.GetLength(1); y++)
         {
             var line = new string(Enumerable.Range(0, map.GetLength(0)).Select(x => map[x, y]).ToArray());
             result.Add(line);
@@ -187,8 +187,8 @@ public static unsafe class Day14Optimized
     public static char[,] ToMap(string[] input)
     {
         var result = new char[input[0].Length, input.Length];
-        for (int x = 0; x < input[0].Length; x++)
-        for (int y = 0; y < input.Length; y++)
+        for (var x = 0; x < input[0].Length; x++)
+        for (var y = 0; y < input.Length; y++)
             result[x, y] = input[y][x];
 
         return result;
@@ -210,7 +210,7 @@ public static unsafe class Day14Optimized
 
         var iterationByHash = new Dictionary<int, int>();
         var resultByIteration = new Dictionary<long, long>();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             // if (i % 1000 == 0)
             //     Console.WriteLine($"i = {i}");

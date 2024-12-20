@@ -7,7 +7,7 @@ namespace aoc.aoc2024.day15;
 public class Day15(Map<char> inputMap, string moves)
 {
     private readonly char[] moves = moves.Where(m => m is '>' or '<' or '^' or 'v').ToArray();
-    
+
     public void Solve()
     {
         Part1().Out("Part 1: ");

@@ -11,6 +11,10 @@ public class Treap<T> : IEnumerable<T> where T : notnull
 
     public Node? Root { get; private set; }
 
+    public IEnumerator<T> GetEnumerator() => InOrder(Root).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
     public bool Add(T value)
     {
         if (Contains(value))
@@ -125,8 +129,4 @@ public class Treap<T> : IEnumerable<T> where T : notnull
     }
 
     public record Node(T Value, long Priority, Node? Left, Node? Right);
-
-    public IEnumerator<T> GetEnumerator() => InOrder(Root).GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

@@ -17,7 +17,7 @@ public static class Runner
     public static void Run<T>(string? fileName = null)
     {
         var dir = FileHelper.PatchDirectoryName(typeof(T).Namespace!.Replace(".", "/"));
-        var fullFileNames = !string.IsNullOrEmpty(fileName) 
+        var fullFileNames = !string.IsNullOrEmpty(fileName)
             ? [Path.Combine(dir, fileName)]
             : Directory.GetFiles(dir, "*.txt");
         Console.WriteLine($"\n=== {typeof(T).FullName} ===");
@@ -78,7 +78,7 @@ public static class Runner
 
         dynamicMethod.CreateDelegate<Action<object?[]>>()(args);
     }
-    
+
     private static void Invoke(ConstructorInfo constructorInfo, object?[] args)
     {
         var solveMethod = constructorInfo.DeclaringType!.GetMethods(BindingFlags.Public | BindingFlags.Instance).Single(x => x.Name == "Solve");

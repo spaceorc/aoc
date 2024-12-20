@@ -31,7 +31,6 @@ public class Day6(Map<char> map)
                     .Last() is null
             );
 
-
     private Walker? Next(Walker w, V? obstacle = null) =>
         !w.Forward().Inside(map) ? null
         : w.Forward().Pos == obstacle || map[w.Forward().Pos] == '#' ? w.TurnCW()

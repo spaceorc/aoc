@@ -16,10 +16,7 @@ public static class Parser
             ? constructorInfo.DeclaringType!
             : method;
         var parameters = method.GetParameters();
-        if (parameters.Length == 1 
-            && parameters[0].ParameterType == typeof(string[]) 
-            && !parameters[0].GetCustomAttributes().OfType<StructureAttribute>().Any()
-            && !methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())
+        if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string[]) && !parameters[0].GetCustomAttributes().OfType<StructureAttribute>().Any() && !methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())
             return [lines];
 
         if (methodAttributesTarget.GetCustomAttributes(true).OfType<StructureAttribute>().Any())

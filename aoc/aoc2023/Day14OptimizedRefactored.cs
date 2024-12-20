@@ -5,32 +5,6 @@ namespace aoc;
 
 public static unsafe class Day14OptimizedRefactored
 {
-    public struct LinesIterator(int sizeX, int sizeY, int x, int y, int posDx, int posDy, int lineDx, int lineDy)
-    {
-        public int sizeX = sizeX, sizeY = sizeY, x = x, y = y, posDx = posDx, posDy = posDy, lineDx = lineDx, lineDy = lineDy;
-
-        public bool MoveNextPos()
-        {
-            x += posDx;
-            y += posDy;
-            return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
-        }
-
-        public bool MoveNextLine()
-        {
-            x = (x + sizeX) % sizeX;
-            y = (y + sizeY) % sizeY;
-            x += lineDx;
-            y += lineDy;
-            return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
-        }
-
-        public static LinesIterator Columns(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: 0, posDx: 0, posDy: 1, lineDx: 1, lineDy: 0);
-        public static LinesIterator ReversedColumns(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: map.GetLength(1) - 1, posDx: 0, posDy: -1, lineDx: 1, lineDy: 0);
-        public static LinesIterator Rows(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: 0, posDx: 1, posDy: 0, lineDx: 0, lineDy: 1);
-        public static LinesIterator ReversedRows(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: map.GetLength(0) - 1, y: 0, posDx: -1, posDy: 0, lineDx: 0, lineDy: 1);
-    }
-
     public static void Fall(char[,] map, LinesIterator iterator)
     {
         do
@@ -64,8 +38,8 @@ public static unsafe class Day14OptimizedRefactored
         var sizeX = map.GetLength(0);
         var sizeY = map.GetLength(1);
 
-        for (int x = 0; x < sizeX; x++)
-        for (int y = 0; y < sizeY; y++)
+        for (var x = 0; x < sizeX; x++)
+        for (var y = 0; y < sizeY; y++)
         {
             if (map[x, y] == 'O')
                 result += sizeY - y;
@@ -86,7 +60,7 @@ public static unsafe class Day14OptimizedRefactored
             for (var i = 0; i < count; ++i, ++mapPtr)
                 result = HashCode.Combine(result, *mapPtr);
             var mapRestPtr = (char*)mapPtr;
-            for (int i = 0; i < rest; ++i, ++mapRestPtr)
+            for (var i = 0; i < rest; ++i, ++mapRestPtr)
                 result = HashCode.Combine(result, (*mapRestPtr).GetHashCode());
         }
 
@@ -96,8 +70,8 @@ public static unsafe class Day14OptimizedRefactored
     public static char[,] ToMap(string[] input)
     {
         var result = new char[input[0].Length, input.Length];
-        for (int x = 0; x < input[0].Length; x++)
-        for (int y = 0; y < input.Length; y++)
+        for (var x = 0; x < input[0].Length; x++)
+        for (var y = 0; y < input.Length; y++)
             result[x, y] = input[y][x];
 
         return result;
@@ -118,7 +92,7 @@ public static unsafe class Day14OptimizedRefactored
 
         var iterationByHash = new Dictionary<int, int>();
         var resultByIteration = new Dictionary<long, long>();
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var hash = GetHash(map);
             if (iterationByHash.TryGetValue(hash, out var prev))
@@ -141,5 +115,31 @@ public static unsafe class Day14OptimizedRefactored
         }
 
         Console.WriteLine($"Part 2 Optimized Refactored = {CalcLoad(map)}");
+    }
+
+    public struct LinesIterator(int sizeX, int sizeY, int x, int y, int posDx, int posDy, int lineDx, int lineDy)
+    {
+        public int sizeX = sizeX, sizeY = sizeY, x = x, y = y, posDx = posDx, posDy = posDy, lineDx = lineDx, lineDy = lineDy;
+
+        public bool MoveNextPos()
+        {
+            x += posDx;
+            y += posDy;
+            return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
+        }
+
+        public bool MoveNextLine()
+        {
+            x = (x + sizeX) % sizeX;
+            y = (y + sizeY) % sizeY;
+            x += lineDx;
+            y += lineDy;
+            return x >= 0 && y >= 0 && x < sizeX && y < sizeY;
+        }
+
+        public static LinesIterator Columns(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: 0, posDx: 0, posDy: 1, lineDx: 1, lineDy: 0);
+        public static LinesIterator ReversedColumns(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: map.GetLength(1) - 1, posDx: 0, posDy: -1, lineDx: 1, lineDy: 0);
+        public static LinesIterator Rows(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: 0, y: 0, posDx: 1, posDy: 0, lineDx: 0, lineDy: 1);
+        public static LinesIterator ReversedRows(char[,] map) => new(map.GetLength(0), map.GetLength(1), x: map.GetLength(0) - 1, y: 0, posDx: -1, posDy: 0, lineDx: 0, lineDy: 1);
     }
 }

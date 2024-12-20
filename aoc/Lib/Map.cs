@@ -35,11 +35,6 @@ public class Map<T>
         get => data[index];
         set => data[index] = value;
     }
-    
-    public T At(V v, T defaultValue = default!)
-    {
-        return Inside(v) ? this[v] : defaultValue;
-    }
 
     public V TopCenter => (TopLeft + TopRight) / 2;
     public V BottomCenter => (BottomLeft + BottomRight) / 2;
@@ -50,17 +45,10 @@ public class Map<T>
     public V BottomLeft => new(0, sizeY - 1);
     public V BottomRight => new(sizeX - 1, sizeY - 1);
 
-    public void Clear()
-    {
-        Array.Fill(data, default);
-    }
-
-    public void Fill(T value)
-    {
-        Array.Fill(data, value);
-    }
-
-    public bool Inside(V v) => v.X >= 0 && v.Y >= 0 && v.X < sizeX && v.Y < sizeY;
+    public T At(V v, T defaultValue = default!) => Inside(v) ? this[v] : defaultValue;
+    public void Clear() => Array.Fill(data, default);
+    public void Fill(T value) => Array.Fill(data, value);
+    public bool Inside(V v) => v is { X: >= 0, Y: >= 0 } && v.X < sizeX && v.Y < sizeY;
 
     public IEnumerable<V> All()
     {
@@ -69,10 +57,11 @@ public class Map<T>
             yield return new V(x, y);
     }
 
-    public IEnumerable<V> All(T value)
-    {
-       return All().Where(v => EqualityComparer<T>.Default.Equals(this[v], value));
-    }
+    public IEnumerable<V> All(T value) => All()
+        .Where(v => EqualityComparer<T>.Default.Equals(this[v], value));
+
+    public IEnumerable<V> AllBut(T value) => All()
+        .Where(v => !EqualityComparer<T>.Default.Equals(this[v], value));
 
     public IEnumerable<V> AllButBorder()
     {
@@ -131,7 +120,7 @@ public class Map<T>
             v += direction;
         }
     }
-    
+
     public IEnumerable<V> Column(long x)
     {
         for (var y = 0; y < sizeY; y++)
@@ -260,10 +249,10 @@ public class Map<T>
 
         return result;
     }
-    
+
     public string Dump(string separator = "")
     {
-       return string.Join("\n", RowsStrings(separator));
+        return string.Join("\n", RowsStrings(separator));
     }
 
     public void Print()
