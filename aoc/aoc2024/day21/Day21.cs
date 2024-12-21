@@ -9,43 +9,35 @@ public class Day21(string[] input)
 {
     public void Solve()
     {
-        var result = 0L;
-        foreach (var code in input)
-        {
-            var sequence = SolveFor(code);
-            result += sequence.Length * long.Parse(code.Replace("A", ""));
-        }
-
-        result.Out("Part 1: ");
+        // Solve(2).Out("Part 1: ");
+        Solve(25).Out("Part 2: ");
     }
 
-    private static string SolveFor(string code)
+    private long Solve(int directionals) =>
+        input
+            .Select(code => new { code, sequence = SolveFor(code, directionals) })
+            .Select(x => x.sequence.Length * long.Parse(x.code.Replace("A", ""))).Sum();
+
+    private static string SolveFor(string code, int directionals)
     {
-        var keypads = new string[]
-        {
-            """
-            789
-            456
-            123
-             0A
-            """,
-
-            """
-             ^A
-            <v>
-            """,
-
-            """
-             ^A
-            <v>
-            """,
-        };
-
+        const string numeric = """
+                               789
+                               456
+                               123
+                                0A
+                               """;
+        const string directional = """
+                                    ^A
+                                   <v>
+                                   """;
+        
+        var keypads = Enumerable.Repeat(directional, directionals).Prepend(numeric).ToArray();
+        
         var current = new[] { code };
         foreach (var keypad in keypads)
         {
             current = current.SelectMany(c => SolveFor(keypad, c)).ToArray();
-            current = current.GroupBy(x => x.Length).OrderBy(x => x.Key).First().ToArray();
+            current = current.GroupBy(x => x.Length).OrderBy(x => x.Key).First().Distinct().ToArray();
         }
 
         return current.First();
