@@ -28,18 +28,16 @@ public class Day21(string[] input)
         Solve(25).Out("Part 2: ");
     }
 
-    private long Solve(int directionals) =>
+    private long Solve(int directionalsCount) =>
         input
-            .Select(code => new { code, sequence = SolveFor(code, directionals) })
-            .Select(x => x.sequence * long.Parse(x.code.Replace("A", "")))
-            .Sum();
+            .Sum(
+                code => GetAllSolutions(numeric, code)
+                            .Select(s => GetSolutionLen(s, directionalsCount))
+                            .Min() *
+                        long.Parse(code.Replace("A", ""))
+            );
 
-    private static long SolveFor(string code, int directionalsCount) =>
-        GetAllSolutions(numeric, code)
-            .Select(s => GetSolutionLength(s, directionalsCount))
-            .Min();
-
-    private static long GetSolutionLength(string solution, int depth)
+    private static long GetSolutionLen(string solution, int depth)
     {
         var cache = new Dictionary<(string, int), long>();
         return Calc(solution, depth);
