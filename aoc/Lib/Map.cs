@@ -60,6 +60,8 @@ public class Map<T>
     public IEnumerable<V> All(T value) => All()
         .Where(v => EqualityComparer<T>.Default.Equals(this[v], value));
 
+    public V Single(T value) => All(value).Single();
+
     public IEnumerable<V> AllBut(T value) => All()
         .Where(v => !EqualityComparer<T>.Default.Equals(this[v], value));
 

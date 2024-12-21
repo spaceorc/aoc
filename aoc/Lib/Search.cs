@@ -34,7 +34,7 @@ public static class Search
             {
                 if (used.TryGetValue(next, out var prev))
                 {
-                    if (prev.Distance <= curItem.Distance + 1)
+                    if (prev.Distance == curItem.Distance + 1)
                         prev.Predecessors.Add(curItem);
                     continue;
                 }

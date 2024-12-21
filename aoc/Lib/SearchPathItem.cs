@@ -15,4 +15,27 @@ public record SearchPathItem<TState>(TState State, long Distance, SearchPathItem
     }
 
     public IEnumerable<TState> Path() => PathBack().Reverse();
+
+    private List<List<TState>>? cachedAllPaths;
+
+    public List<List<TState>> AllPaths()
+    {
+        if (cachedAllPaths != null)
+            return cachedAllPaths;
+
+        var result = new List<List<TState>>();
+        if (Predecessors.Count == 0)
+        {
+            result.Add([State]);
+        }
+        else
+        {
+            foreach (var path in Predecessors.SelectMany(predecessor => predecessor.AllPaths()))
+            {
+                result.Add(path.Append(State).ToList());
+            }
+        }
+        cachedAllPaths = result;
+        return result;
+    }    
 }
