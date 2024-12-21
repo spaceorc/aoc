@@ -1,91 +1,136 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using aoc.Lib;
 
 namespace aoc.aoc2024.day21;
 
 public class Day21(string[] input)
 {
+    private static readonly Map<char> numeric = Map<char>.Parse(
+        """
+        789
+        456
+        123
+         0A
+        """
+    );
+
+    private static readonly Map<char> directional = Map<char>.Parse(
+        """
+         ^A
+        <v>
+        """
+    );
+
+    private static readonly Dictionary<(string, int), long> cache2 = new();
+
     public void Solve()
     {
-        // Solve(2).Out("Part 1: ");
+        // foreach (var s in SolveFor(directional, "<A"))
+        // {
+        // Console.WriteLine(s);   
+        // }
+        // return;
+        Solve(2).Out("Part 1: ");
+        // Solve(3).Out("Part 1: ");
         Solve(25).Out("Part 2: ");
     }
 
     private long Solve(int directionals) =>
         input
             .Select(code => new { code, sequence = SolveFor(code, directionals) })
-            .Select(x => x.sequence.Length * long.Parse(x.code.Replace("A", ""))).Sum();
+            .Select(x => x.sequence * long.Parse(x.code.Replace("A", "")))
+            .Sum();
 
-    private static string SolveFor(string code, int directionals)
+    private static long SolveFor(string code, int directionals)
     {
-        const string numeric = """
-                               789
-                               456
-                               123
-                                0A
-                               """;
-        const string directional = """
-                                    ^A
-                                   <v>
-                                   """;
-        
-        var keypads = Enumerable.Repeat(directional, directionals).Prepend(numeric).ToArray();
-        
-        var current = new[] { code };
-        foreach (var keypad in keypads)
+        var numericSolutions = GetAllSolutions(numeric, code).Distinct().ToList();
+
+        var all = new List<long>();
+        for (var ii = 0; ii < numericSolutions.Count; ii++)
         {
-            current = current.SelectMany(c => SolveFor(keypad, c)).ToArray();
-            current = current.GroupBy(x => x.Length).OrderBy(x => x.Key).First().Distinct().ToArray();
+            var numericSolution = numericSolutions[ii];
+            foreach (var current in GetAllSolutions(directional, numericSolution))
+            {
+                var res = CalcFor(current, directionals - 1);
+                // Console.WriteLine(res);
+                all.Add(res);
+            }
         }
 
-        return current.First();
+        return all.Min();
     }
 
-    private static IEnumerable<string> SolveFor(string map, string code)
+    private static long CalcFor(string solution, int depth)
     {
-        var allCodes = code.Prepend('A').SlidingWindow(2).Select(w => SolveFor(map, w[0], w[1]).ToList()).ToList();
-        return allCodes.Aggregate(
-            new[] { "" },
-            (acc, next) => acc.SelectMany(a => next.Select(n => a + n)).ToArray()
-        );
+        if (cache2.TryGetValue((solution, depth), out var cached))
+            return cached;
+
+        if (depth == 0)
+            return solution.Length;
+
+        var parts = new List<string>();
+        var startIndex = 0;
+        while (startIndex < solution.Length)
+        {
+            var endIndex = solution.IndexOf('A', startIndex);
+            parts.Add(solution.Substring(startIndex, endIndex - startIndex + 1));
+            startIndex = endIndex + 1;
+        }
+
+        if (parts.Count == 0)
+            throw new Exception("Invalid solution");
+
+        var res = parts.Count > 1
+            ? parts.Select(x => CalcFor(x, depth)).Sum()
+            : GetAllSolutions(directional, parts[0]).Select(x => CalcFor(x, depth - 1)).Min();
+
+        cache2[(solution, depth)] = res;
+        return res;
     }
 
-    private static IEnumerable<string> SolveFor(string map, char s, char e)
+    private static List<string> GetAllSolutions(Map<char> keypad, string code)
     {
-        var keypad = Map<char>.Parse(map);
-        var start = keypad.Single(s);
+        var results = new List<StringBuilder> { new() };
+        foreach (var (s, e) in code.Prepend('A').Zip(code))
+        {
+            var solutions = GetAllPaths(keypad, s, e);
+            if (solutions.Length == 1)
+            {
+                foreach (var result in results)
+                    result.Append(solutions[0]);
+            }
+            else
+            {
+                var newResults = new List<StringBuilder>();
+                foreach (var result in results)
+                {
+                    foreach (var solution in solutions)
+                    {
+                        var newResult = new StringBuilder(result.ToString());
+                        newResult.Append(solution);
+                        newResults.Add(newResult);
+                    }
+                }
 
-        var allPaths = Search.Bfs(
-                [start],
+                results = newResults;
+            }
+        }
+
+        return results.Select(x => x.ToString()).ToList();
+    }
+
+    private static string[] GetAllPaths(Map<char> keypad, char s, char e) =>
+        Search.Bfs(
+                [keypad.Single(s)],
                 v => v.Area4().Where(n => keypad.Inside(n) && keypad[n] != ' ')
             )
-            .ToArray()
-            .First(x => keypad[x.State] == e)
+            .ToArray() // make it not lazy, otherwise not all paths are calculated
+            .Single(x => keypad[x.State] == e)
             .AllPaths()
+            .ToArray()
+            .Select(x => new string(x.SlidingWindow(2).Select(w => (w[1] - w[0]).ToDirChar()).Append('A').ToArray()))
             .ToArray();
-        return allPaths
-            .Select(
-                x =>
-                    new string(
-                        x.SlidingWindow(2)
-                            .Select(w => GetDir(w[1] - w[0]))
-                            .Append('A')
-                            .ToArray()
-                    )
-            );
-    }
-
-    private static char GetDir(V v)
-    {
-        return v switch
-        {
-            { X: 0, Y: -1 } => '^',
-            { X: 0, Y: 1 } => 'v',
-            { X: -1, Y: 0 } => '<',
-            { X: 1, Y: 0 } => '>',
-            _ => throw new Exception($"Invalid direction {v}")
-        };
-    }
 }

@@ -32,4 +32,13 @@ public static class VHelpers
             yield return v;
         yield return b;
     }
+
+    public static Dir ToDir(this V v) =>
+        v == V.up ? Dir.Up :
+        v == V.down ? Dir.Down :
+        v == V.left ? Dir.Left :
+        v == V.right ? Dir.Right :
+        throw new Exception($"Invalid direction {v}");
+
+    public static char ToDirChar(this V v) => v.ToDir().ToChar();
 }

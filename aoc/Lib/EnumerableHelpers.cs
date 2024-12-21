@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace aoc.Lib;
 
@@ -165,6 +166,11 @@ public static class EnumerableHelpers
         }
     }
 
+    public static BigInteger Sum(this IEnumerable<BigInteger> items)
+    {
+        return items.Aggregate(BigInteger.Zero, (a, b) => a + b);
+    }
+    
     public static IEnumerable<T> TopSort<T>(this IEnumerable<T> items, Func<T, IEnumerable<T>> getDependencies) where T : notnull
     {
         var result = new List<T>();
