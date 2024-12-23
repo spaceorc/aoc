@@ -57,13 +57,15 @@ public static class Alg
     //         X := X ⋃ {v}
     public static IEnumerable<IReadOnlySet<T>> FindMaxCliques<T>(Dictionary<T, List<T>> graph) where T : notnull
     {
-        var R = ImmutableHashSet<T>.Empty;
-        var P = graph.Keys.ToImmutableHashSet();
-        var X = ImmutableHashSet<T>.Empty;
-        return BronKerboschWithPivot(graph, R, P, X);
+        return BronKerbosch(
+            graph,
+            R: ImmutableHashSet<T>.Empty,
+            P: graph.Keys.ToImmutableHashSet(),
+            X: ImmutableHashSet<T>.Empty
+        );
     }
 
-    private static IEnumerable<IReadOnlySet<T>> BronKerboschWithPivot<T>(
+    private static IEnumerable<IReadOnlySet<T>> BronKerbosch<T>(
         Dictionary<T, List<T>> graph,
         ImmutableHashSet<T> R,
         ImmutableHashSet<T> P,
@@ -81,11 +83,12 @@ public static class Alg
 
         foreach (var v in candidates)
         {
-            var newR = R.Add(v);
-            var newP = P.Intersect(graph[v]);
-            var newX = X.Intersect(graph[v]);
-
-            foreach (var clique in BronKerboschWithPivot(graph, newR, newP, newX))
+            foreach (var clique in BronKerbosch(
+                         graph,
+                         R: R.Add(v),
+                         P: P.Intersect(graph[v]),
+                         X: X.Intersect(graph[v])
+                     ))
                 yield return clique;
 
             P = P.Remove(v);
