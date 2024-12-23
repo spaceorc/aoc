@@ -33,5 +33,5 @@ public class ArrayEqualityComparer<T>(IEqualityComparer<T>? elementComparer = nu
 
 public static class ArrayEqualityComparer
 {
-    public static ArrayEqualityComparer<T> Create<T>() => new();
+    public static ArrayEqualityComparer<T> Create<T>(IEqualityComparer<T>? elementComparer = null) => new(elementComparer);
 }

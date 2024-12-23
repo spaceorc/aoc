@@ -195,4 +195,34 @@ public static class EnumerableHelpers
             used[item] = true;
         }
     }
+
+    public static IEnumerable<T[]> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> source)
+    {
+        var list = source as IReadOnlyList<IReadOnlyList<T>>
+            ?? source.Select(x => x as IReadOnlyList<T> ?? x.ToArray()).ToArray();
+        
+        if (list.Any(x => x.Count == 0))
+            yield break;
+        
+        var arr = new int[list.Count];
+        var found = true;
+        while (found)
+        {
+            yield return list.Select((x, i) => x[arr[i]]).ToArray();
+            
+            found = false;
+            for (var i = 0; i < list.Count; i++)
+            {
+                arr[i]++;
+                if (arr[i] == list[i].Count)
+                {
+                    arr[i] = 0;
+                    continue;
+                }
+                
+                found = true;
+                break;
+            }
+        }
+    }
 }
