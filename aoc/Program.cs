@@ -10,6 +10,6 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day21>();
+        Runner.Run<Day24>();
     }
 }
