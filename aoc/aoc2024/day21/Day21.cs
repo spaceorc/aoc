@@ -60,10 +60,9 @@ public class Day21(string[] input)
     private static string[] GetAllSolutions(Map<char> keypad, string code) =>
         code.Prepend('A')
             .Zip(code, (s, e) => GetAllPaths(keypad, s, e))
-            .Aggregate(
-                new[] { "" },
-                (acc, paths) => acc.SelectMany(a => paths.Select(p => a + p)).ToArray()
-            );
+            .CartesianProduct()
+            .Select(p => string.Join("", p))
+            .ToArray();
 
     private static string[] GetAllPaths(Map<char> keypad, char s, char e) =>
         Search.Bfs(
