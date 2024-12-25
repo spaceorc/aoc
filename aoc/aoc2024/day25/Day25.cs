@@ -8,12 +8,10 @@ public class Day25(params Map<char>[] input)
     public void Solve()
     {
         var lockCodes = input.Where(m => m[V.Zero] == '#')
-            .ToArray()
             .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
             .ToList();
 
         var keyCodes = input.Where(m => m[V.Zero] == '.')
-            .ToArray()
             .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
             .ToList();
 
