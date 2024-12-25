@@ -14,12 +14,12 @@ public class Day25(params Map<char>[] input)
     {
         var lockCodes = input.Where(m => m[V.Zero] == '#')
             .ToArray()
-            .Select(l => l.Columns().Select(c => c.Count(v => l[v] == '#') - 1).ToArray())
+            .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
             .ToList();
 
         var keyCodes = input.Where(m => m[V.Zero] == '.')
             .ToArray()
-            .Select(l => l.Columns().Select(c => c.Count(v => l[v] == '#') - 1).ToArray())
+            .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
             .ToList();
 
         return lockCodes
