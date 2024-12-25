@@ -1,8 +1,9 @@
+using System.Linq;
 using aoc.Lib;
 
 namespace aoc.aoc2024.day25;
 
-public class Day25(string[] input)
+public class Day25(params Map<char>[] input)
 {
     public void Solve()
     {
@@ -11,6 +12,18 @@ public class Day25(string[] input)
 
     private long Part1()
     {
-        return 0L;
+        var lockCodes = input.Where(m => m[V.Zero] == '#')
+            .ToArray()
+            .Select(l => l.Columns().Select(c => c.Count(v => l[v] == '#') - 1).ToArray())
+            .ToList();
+
+        var keyCodes = input.Where(m => m[V.Zero] == '.')
+            .ToArray()
+            .Select(l => l.Columns().Select(c => c.Count(v => l[v] == '#') - 1).ToArray())
+            .ToList();
+
+        return lockCodes
+            .SelectMany(_ => keyCodes, (lockCode, keyCode) => (lockCode, keyCode))
+            .Count(p => p.lockCode.Zip(p.keyCode, (l, k) => l + k).All(x => x <= 5));
     }
 }
