@@ -7,11 +7,6 @@ public class Day25(params Map<char>[] input)
 {
     public void Solve()
     {
-        Part1().Out("Part 1: ");
-    }
-
-    private long Part1()
-    {
         var lockCodes = input.Where(m => m[V.Zero] == '#')
             .ToArray()
             .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
@@ -22,8 +17,9 @@ public class Day25(params Map<char>[] input)
             .Select(m => m.Columns().Select(c => c.Count(v => m[v] == '#') - 1).ToArray())
             .ToList();
 
-        return lockCodes
+        lockCodes
             .SelectMany(_ => keyCodes, (lockCode, keyCode) => (lockCode, keyCode))
-            .Count(p => p.lockCode.Zip(p.keyCode, (l, k) => l + k).All(x => x <= 5));
+            .Count(p => p.lockCode.Zip(p.keyCode, (l, k) => l + k).All(x => x <= 5))
+            .Out("Part 1: ");
     }
 }
