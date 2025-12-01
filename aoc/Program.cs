@@ -1,4 +1,4 @@
-﻿using aoc.aoc2024.day25;
+﻿using aoc.aoc2025.day1;
 using aoc.ParseLib;
 
 namespace aoc;
@@ -7,6 +7,6 @@ public static class Program
 {
     private static void Main()
     {
-        Runner.Run<Day25>();
+        Runner.Run<Day1>();
     }
 }
