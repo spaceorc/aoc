@@ -196,6 +196,12 @@ public static class EnumerableHelpers
         }
     }
 
+    public static IEnumerable<long> RangeFromTo(long from, long to)
+    {
+        for (var i = from; i <= to; i++)
+            yield return i;
+    }
+
     public static IEnumerable<T[]> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> source)
     {
         var list = source as IReadOnlyList<IReadOnlyList<T>>
