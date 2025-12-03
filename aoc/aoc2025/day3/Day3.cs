@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using aoc.Lib;
 
@@ -16,29 +15,22 @@ public class Day3(string[] input)
     private long Part1() => input.Select(line => MaxN(line, 2)).Sum();
     private long Part2() => input.Select(line => MaxN(line, 12)).Sum();
 
-    private static long MaxN(string s, int N)
-    {
-        var cache = new Dictionary<(int, int), long>();
-        return MaxN(s, 0, N, cache);
-    }
+    private static long MaxN(string s, int N) =>
+        Alg.RecursiveDynProg<(int startIndex, int n), long>(
+            (0, N),
+            (tuple, getResult) =>
+            {
+                var (startIndex, n) = tuple;
+                if (n == 0)
+                    return 0L;
 
-    private static long MaxN(string s, int startIndex, int N, Dictionary<(int, int), long> cache)
-    {
-        if (N == 0)
-            return 0;
-            
-        if (startIndex == s.Length - N)
-            return long.Parse(s[startIndex..]);
-            
-        var key = (startIndex, N);
-        if (cache.TryGetValue(key, out var cachedValue))
-            return cachedValue;
+                if (startIndex == s.Length - n)
+                    return long.Parse(s[startIndex..]);
 
-        var result = Math.Max(
-            MaxN(s, startIndex + 1, N, cache),
-            (s[startIndex] - '0') * MathHelpers.Pow(10, N - 1) + MaxN(s, startIndex + 1, N - 1, cache)
+                return Math.Max(
+                    getResult((startIndex + 1, n)),
+                    (s[startIndex] - '0') * MathHelpers.Pow(10, n - 1) + getResult((startIndex + 1, n - 1))
+                );
+            }
         );
-        cache[key] = result;
-        return result;
-    }
 }
