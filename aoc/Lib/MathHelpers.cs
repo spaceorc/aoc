@@ -62,7 +62,7 @@ public static class MathHelpers
         return result;
     }
 
-    public static long AddWithOverflow(long a, long b)
+    public static long AddWithMinMaxValue(long a, long b)
     {
         if (a == long.MaxValue && b == long.MinValue || a == long.MinValue && b == long.MaxValue)
             throw new OverflowException("Addition overflow");
