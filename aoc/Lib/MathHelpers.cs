@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace aoc.Lib;
@@ -59,5 +60,19 @@ public static class MathHelpers
         for (var i = 0; i < exp; i++)
             result *= @base;
         return result;
+    }
+
+    public static long AddWithOverflow(long a, long b)
+    {
+        if (a == long.MaxValue && b == long.MinValue || a == long.MinValue && b == long.MaxValue)
+            throw new OverflowException("Addition overflow");
+        
+        if (a == long.MinValue || b == long.MinValue)
+            return long.MinValue;
+        
+        if (a == long.MaxValue || b == long.MaxValue)
+            return long.MaxValue;
+        
+        return checked(a + b);
     }
 }

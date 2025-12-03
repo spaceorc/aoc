@@ -19,18 +19,14 @@ public class Day3(string[] input)
         Alg.RecursiveDynProg<(int startIndex, int n), long>(
             (0, N),
             (tuple, getResult) =>
-            {
-                var (startIndex, n) = tuple;
-                if (n == 0)
-                    return 0L;
-
-                if (startIndex == s.Length - n)
-                    return long.Parse(s[startIndex..]);
-
-                return Math.Max(
+                tuple is { n: var n, startIndex: var startIndex } && n == 0 ? 0L
+                : startIndex > s.Length - n ? long.MinValue
+                : Math.Max(
                     getResult((startIndex + 1, n)),
-                    (s[startIndex] - '0') * MathHelpers.Pow(10, n - 1) + getResult((startIndex + 1, n - 1))
-                );
-            }
+                    MathHelpers.AddWithOverflow(
+                        (s[startIndex] - '0') * MathHelpers.Pow(10, n - 1),
+                        getResult((startIndex + 1, n - 1))
+                    )
+                )
         );
 }
