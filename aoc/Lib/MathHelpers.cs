@@ -52,4 +52,12 @@ public static class MathHelpers
 
     public static long Mod(this long v, long divisor) => (v % divisor + divisor) % divisor;
     public static int Mod(this int v, int divisor) => (v % divisor + divisor) % divisor;
+
+    public static long Pow(long @base, int exp)
+    {
+        long result = 1;
+        for (var i = 0; i < exp; i++)
+            result *= @base;
+        return result;
+    }
 }
