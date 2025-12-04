@@ -49,6 +49,12 @@ public class Map<T>
     public void Clear() => Array.Fill(data, default);
     public void Fill(T value) => Array.Fill(data, value);
     public bool Inside(V v) => v is { X: >= 0, Y: >= 0 } && v.X < sizeX && v.Y < sizeY;
+    
+    public void Fill(T value, IEnumerable<V> positions)
+    {
+        foreach (var v in positions)
+            this[v] = value;
+    }
 
     public IEnumerable<V> All()
     {
