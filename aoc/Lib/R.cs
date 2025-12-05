@@ -10,6 +10,7 @@ public record R(long Start, long Len)
     public bool IsEmpty => Len <= 0;
     public bool Touches(R other) => End == other.Start || Start == other.End;
     public bool Intersects(R other) => !IntersectWith(other).IsEmpty;
+    public bool Contains(long value) => value >= Start && value < End;
     public R IntersectWith(R other) => FromStartEnd(Max(Start, other.Start), Min(End, other.End));
     public R MakeGreaterThan(long value) => FromStartEnd(Max(Start, value + 1), End);
     public R MakeLessThan(long value) => FromStartEnd(Start, Min(End, value));
