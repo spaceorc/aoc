@@ -1,5 +1,3 @@
-using System;
-
 namespace aoc.Lib;
 
 public static class DirExtensions

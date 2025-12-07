@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,5 +54,19 @@ public static class StringListHelpers
             result.Add(cur.ToArray());
 
         return result;
+    }
+    
+    public static Map<string> ToMapSeparated(this IEnumerable<string> lines, string separators = " ")
+    {
+        var items = lines.Select(x => x.Split(separators.ToCharArray(), StringSplitOptions.RemoveEmptyEntries)).ToList();
+        var map = new Map<string>(items[0].Length, items.Count);
+        for (var y = 0; y < items.Count; y++)
+        for (var x = 0; x < items[y].Length; x++)
+        {
+            map[new V(x, y)] = items[y][x];
+        }
+        return map;
+        
+        
     }
 }

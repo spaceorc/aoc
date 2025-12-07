@@ -139,6 +139,12 @@ public class Map<T>
     {
         return Column(x).Select(v => this[v]);
     }
+    
+    public IEnumerable<T[]> ColumnsValues()
+    {
+        for (var x = 0; x < sizeX; x++)
+            yield return ColumnValues(x).ToArray();
+    }
 
     public string ColumnString(long x, string separator = "")
     {
@@ -166,6 +172,12 @@ public class Map<T>
     public IEnumerable<T> RowValues(long y)
     {
         return Row(y).Select(v => this[v]);
+    }
+    
+    public IEnumerable<T[]> RowsValues()
+    {
+        for (var y = 0; y < sizeY; y++)
+            yield return RowValues(y).ToArray();
     }
 
     public string RowString(long y, string separator = "")
@@ -224,10 +236,24 @@ public class Map<T>
     {
         return data.Aggregate(0, (acc, item) => HashCode.Combine(acc, item?.GetHashCode()));
     }
+    
+    public Map<T> Transpose()
+    {
+        var result = new Map<T>(sizeY, sizeX);
+        for (var y = 0; y < sizeY; y++)
+        for (var x = 0; x < sizeX; x++)
+            result[new V(y, x)] = this[new V(x, y)];
+        return result;
+    }
 
     public static Map<T> Parse(string s)
     {
-        return ToMap(s.Split('\n'));
+        return Parse(s.Split('\n'));
+    }
+
+    public static Map<T> Parse(string[] s)
+    {
+        return ToMap(s);
     }
 
     private static Map<T> ToMap(IEnumerable<string> lines)
