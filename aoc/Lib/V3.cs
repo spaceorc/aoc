@@ -38,6 +38,10 @@ public class V3(long x, long y, long z) : IEquatable<V3>
 
     public long MLen() => Math.Abs(X) + Math.Abs(Y) + Math.Abs(Z);
     public long CLen() => Math.Max(Math.Max(Math.Abs(X), Math.Abs(Y)), Math.Abs(Z));
+    public long Len2() => X * X + Y * Y + Z * Z;
+    public long MDistTo(V3 other) => (this - other).MLen();
+    public long CDistTo(V3 other) => (this - other).CLen();
+    public long Dist2To(V3 other) => (this - other).Len2();
     public static long DProd(V3 a, V3 b) => a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 
     public override string ToString() => $"{X} {Y} {Z}";

@@ -15,7 +15,7 @@ public class Day6(string[] input)
         problem.op switch
         {
             '+' => problem.numbers.Sum(),
-            '*' => problem.numbers.Aggregate(1L, (a, b) => a * b),
+            '*' => problem.numbers.Product(),
         };
 
     private long Part1()
