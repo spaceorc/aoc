@@ -44,19 +44,17 @@ public class Day8(V3[] input)
             }
         }
 
-        var ordered = distances2.OrderBy(x => x.Value).Select(x => x.Key).ToArray();
+        var orderedPairs = distances2.OrderBy(x => x.Value).Select(x => x.Key).ToArray();
 
         var componentById = Enumerable.Range(0, input.Length).ToDictionary(x => x, x => x);
         var idsByComponent = Enumerable.Range(0, input.Length).ToDictionary(x => x, x => new HashSet<int> { x });
 
-        foreach (var (a, b) in ordered)
+        foreach (var (a, b) in orderedPairs)
         {
             var compA = componentById[a];
             var compB = componentById[b];
             if (compA == compB)
-            {
                 yield return (null, idsByComponent);
-            }
             else
             {
                 // Merge components

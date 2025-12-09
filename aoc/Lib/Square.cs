@@ -17,7 +17,7 @@ public class Square(V topLeft, V bottomRight) : IEquatable<Square>
     public long MaxX => BottomRight.X;
     public long MaxY => BottomRight.Y;
 
-    public long Area => (MaxX - MinX + 1) * (MaxY - MinY + 1);
+    public long Area => IsEmpty() ? 0 : (MaxX - MinX + 1) * (MaxY - MinY + 1);
 
     public bool Equals(Square? other)
     {
@@ -36,7 +36,7 @@ public class Square(V topLeft, V bottomRight) : IEquatable<Square>
             return true;
         if (obj.GetType() != GetType())
             return false;
-        return Equals((Cube)obj);
+        return Equals((Square)obj);
     }
 
     public override int GetHashCode()
@@ -55,11 +55,21 @@ public class Square(V topLeft, V bottomRight) : IEquatable<Square>
     }
 
     public Square Grow(long delta) => new(TopLeft - new V(delta, delta), BottomRight + new V(delta, delta));
+    public Square Shrink(long delta) => Grow(-delta);
     public Square Shift(V delta) => new(TopLeft + delta, BottomRight + delta);
     public Square ShiftX(long delta) => new(TopLeft + new V(delta, 0), BottomRight + new V(delta, 0));
     public Square ShiftY(long delta) => new(TopLeft + new V(0, delta), BottomRight + new V(0, delta));
     public bool Contains(V v) => v.X >= MinX && v.X <= MaxX && v.Y >= MinY && v.Y <= MaxY;
     public bool IsEmpty() => MinX > MaxX || MinY > MaxY;
+    public Square Intersection(Square other) => new(
+        Math.Max(MinX, other.MinX),
+        Math.Max(MinY, other.MinY),
+        Math.Min(MaxX, other.MaxX),
+        Math.Min(MaxY, other.MaxY)
+    );
+
+    public bool Intersects(Square other) => !Intersection(other).IsEmpty();
+    public bool Touches(Square other) => !Intersects(other) && Intersects(other.Grow(1));
 
     public IEnumerable<V> All()
     {

@@ -106,6 +106,7 @@ public record V(long X, long Y)
     public V Mod(long k) => new(X.Mod(k), Y.Mod(k));
     public V Mod(long x, long y) => new(X.Mod(x), Y.Mod(y));
     public V Mod(V other) => new(X.Mod(other.X), Y.Mod(other.Y));
+    public V Sign() => new(Math.Sign(X), Math.Sign(Y));
 
     public V RotateCW() => new(-Y, X);
     public V RotateCCW() => new(Y, -X);
