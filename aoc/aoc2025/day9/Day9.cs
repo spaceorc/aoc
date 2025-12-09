@@ -31,6 +31,7 @@ public class Day9(V[] input)
             .CartesianProduct()
             .Select(vs => vs.BoundingBox())
             .Where(b => !borderBoxes.Any(bb => bb.Intersects(b.Shrink(1))))
+            .Where(b => !b.Shrink(1).TopLeft.IsInsidePolygon(input))
             .Max(b => b.Area);
     }
 }
