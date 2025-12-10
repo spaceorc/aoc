@@ -71,29 +71,31 @@ public class Day10([Template("[{diagram}] {buttons} {{{joltage}}}")] [Split("()"
             using var scope = context.SetUp();
             using var optimizer = context.CreateOptimizer();
 
-            var joltage = item.joltage.Select(j => context.Int(j)).ToArray();
-            var buttonCount = 
-                new IntExpr[item.buttons.Length];
+            var joltages = item
+                .joltage
+                .Select(j => context.Int(j))
+                .ToArray();
             
-            var totals = joltage.Select(_ => new List<IntExpr>()).ToArray();
+            var buttonCounts = item
+                .buttons
+                .Select((_, b) => context.IntConst("buttonCount_" + b))
+                .ToArray();
+            
+            var sums = item
+                .buttons
+                .SelectMany((js, b) => js.Select(j => (j, b)))
+                .GroupBy(x => x.j, x => x.b)
+                .OrderBy(g => g.Key)
+                .Select(g => context.Add(g.Select(b => buttonCounts[b])))
+                .ToArray();
+            
+            foreach (var buttonCount in buttonCounts) 
+                optimizer.Assert(buttonCount >= 0);
+            
+            for (var j = 0; j < item.joltage.Length; j++)
+                optimizer.Assert(sums[j] == joltages[j]);
 
-            for (int b = 0; b < item.buttons.Length; b++)
-            {
-                var x = context.IntConst("buttonCount_" + b);
-                optimizer.Assert(x >= 0);
-                buttonCount[b] = x;
-
-                foreach (var j in item.buttons[b])
-                    totals[j].Add(x);
-            }
-
-            for (int j = 0; j < item.joltage.Length; j++)
-            {
-                var sumExpr = context.Add([..totals[j]]);
-                optimizer.Assert(sumExpr == joltage[j]);
-            }
-
-            var totalButtonPresses = context.Add([..buttonCount]);
+            var totalButtonPresses = context.Add(buttonCounts);
 
             var objective = optimizer.Minimize(totalButtonPresses);
             var result = optimizer.Check();

@@ -192,7 +192,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Spaceorc.Z3Wrap" Version="0.0.6-beta.1" />
+      <PackageReference Include="Spaceorc.Z3Wrap" Version="0.0.6-beta.2" />
     </ItemGroup>
 
 </Project>
