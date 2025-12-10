@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace aoc.Lib;
 
@@ -97,6 +99,10 @@ public class Matrix
     public static Matrix Col(VRat v) => Col(v.X, v.Y);
     public static Matrix Col(V v) => Col(v.X, v.Y);
 
+    public static Matrix Col(params long[] values) => Col(values.Select(v => new Rational(v)).ToArray());
+    
+    public static Matrix Col(params BigInteger[] values) => Col(values.Select(v => new Rational(v)).ToArray());
+    
     public static Matrix Col(params Rational[] values)
     {
         var d = new Rational[values.Length, 1];
@@ -224,4 +230,10 @@ public class Matrix
 
     public VRat ColAsV(int col) => new(data[0, col], data[1, col]);
     public VRat RowAsV(int row) => new(data[row, 0], data[row, 1]);
+    
+    public IEnumerable<Rational> Col(int col)
+    {
+        for (var r = 0; r < RowCount; r++)
+            yield return data[r, col];
+    }
 }

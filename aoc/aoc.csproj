@@ -183,6 +183,16 @@
         <None Update="aoc2024\day16\sample2.txt">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="aoc2025\day10\input.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="aoc2025\day10\sample.txt">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Spaceorc.Z3Wrap" Version="0.0.6-beta.1" />
     </ItemGroup>
 
 </Project>

@@ -580,7 +580,11 @@ public static class Program2023
     }
 
     private static void Solve_19(
-        [Template("{name}{{{branches},{otherwise}}}")] [Split(",", Target = "branches")] [Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")] (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
+        [Template("{name}{{{branches},{otherwise}}}")] 
+        [Split(",", Target = "branches")] 
+        [Template("{arg:char}{op:char}{value}:{next}", Target = "branches.item")] 
+        (string name, (char field, char op, long value, string next)[] branches, string otherwise)[] rules,
+        
         [Split("{}=xmas,")]
         long[][] parts
     )
