@@ -78,8 +78,8 @@ public class Day10([Template("[{diagram}] {buttons} {{{joltage}}}")] [Split("()"
             
             var sums = item
                 .buttons
-                .SelectMany((buttonJoltages, buttonIndex) => buttonJoltages.Select(joltageIndex => (joltageIndex, buttonIndex)))
-                .GroupBy(x => x.joltageIndex, x => buttonCounts[x.buttonIndex])
+                .SelectMany((js, bi) => js.Select(ji => (ji, bi)))
+                .GroupBy(x => x.ji, x => buttonCounts[x.bi])
                 .OrderBy(g => g.Key)
                 .Select(g => g.Sum())
                 .ToArray();
