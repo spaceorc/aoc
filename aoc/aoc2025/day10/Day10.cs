@@ -70,11 +70,6 @@ public class Day10([Template("[{diagram}] {buttons} {{{joltage}}}")] [Split("()"
             using var context = new Z3Context();
             using var scope = context.SetUp();
             using var optimizer = context.CreateOptimizer();
-
-            var joltages = item
-                .joltage
-                .Select(j => context.Int(j))
-                .ToArray();
             
             var buttonCounts = item
                 .buttons
@@ -83,19 +78,20 @@ public class Day10([Template("[{diagram}] {buttons} {{{joltage}}}")] [Split("()"
             
             var sums = item
                 .buttons
-                .SelectMany((js, b) => js.Select(j => (j, b)))
-                .GroupBy(x => x.j, x => x.b)
+                .SelectMany((buttonJoltages, buttonIndex) => buttonJoltages.Select(joltageIndex => (joltageIndex, buttonIndex)))
+                .GroupBy(x => x.joltageIndex, x => buttonCounts[x.buttonIndex])
                 .OrderBy(g => g.Key)
-                .Select(g => context.Add(g.Select(b => buttonCounts[b])))
+                .Select(g => g.Sum())
                 .ToArray();
+            
+            var totalButtonPresses = buttonCounts.Sum();
             
             foreach (var buttonCount in buttonCounts) 
                 optimizer.Assert(buttonCount >= 0);
             
             for (var j = 0; j < item.joltage.Length; j++)
-                optimizer.Assert(sums[j] == joltages[j]);
-
-            var totalButtonPresses = context.Add(buttonCounts);
+                optimizer.Assert(sums[j] == item.joltage[j]);
+            
 
             var objective = optimizer.Minimize(totalButtonPresses);
             var result = optimizer.Check();
